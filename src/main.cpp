@@ -9,7 +9,7 @@
 // firmware is agnostic to where it runs. To use another installation, edit
 // only this block.
 // ---------------------------------------------------------------------------
-static const MeterConfig kConfig = {
+static constexpr MeterConfig kConfig = {
     /* mainsVoltage     */ 220.0f,   // [V]      switch to 127.0f on a 127 V installation
     /* calibrationFactor*/ 1.0f,     //          empirical CT calibration
     /* ctRatio          */ 2000.0f,  //          SCT-013-000 turns ratio
@@ -24,7 +24,7 @@ Meter meter(kConfig);
 unsigned long lastSampleMicros = 0;
 
 // 1,000,000 us / 860 SPS = ~1163 us per sample.
-const unsigned long sampleIntervalMicros = 1163;
+constexpr unsigned long sampleIntervalMicros = 1163;
 
 void setup() {
   Serial.begin(921600);

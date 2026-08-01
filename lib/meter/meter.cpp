@@ -3,7 +3,7 @@
 // Smoothing window of the DC offset moving average (emonLib uses 1024). Larger
 // means a slower, steadier estimate; it is not specific to the installation,
 // so it is a module constant rather than a MeterConfig field.
-static const float kDcFilterWindow = 1024.0f;
+static constexpr float kDcFilterWindow = 1024.0f;
 
 Meter::Meter(const MeterConfig& config) : config_(config), dc_(0.0f), seeded_(false) {}
 
