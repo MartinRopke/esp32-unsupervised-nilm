@@ -2,7 +2,7 @@
 
 #include "meter.h"
 
-// A representative install config. The offset-removal behavior under test does
+// A representative install config. The offset removal behavior under test does
 // not depend on these values, but the Meter is always constructed from config.
 static MeterConfig makeConfig() {
   MeterConfig c;
@@ -15,7 +15,7 @@ static MeterConfig makeConfig() {
   return c;
 }
 
-// A pure-DC signal has no AC component: once the DC estimate settles, the
+// A pure DC signal has no AC component: once the DC estimate settles, the
 // estimated DC level equals the input and the centered sample is ~zero.
 void test_pure_dc_centers_to_zero(void) {
   Meter meter(makeConfig());

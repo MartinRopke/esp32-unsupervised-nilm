@@ -5,16 +5,17 @@
 
 // ---------------------------------------------------------------------------
 // Installation configuration block.
-// All installation- and appliance-specific constants live here so the firmware
-// is agnostic to where it runs. To use another installation, edit only this block.
+// All constants specific to the installation or appliance live here so the
+// firmware is agnostic to where it runs. To use another installation, edit
+// only this block.
 // ---------------------------------------------------------------------------
 static const MeterConfig kConfig = {
     /* mainsVoltage     */ 220.0f,  // [V]      switch to 127.0f on a 127 V installation
-    /* calibrationFactor*/ 1.0f,    //          empirical CT calibration (tuned in slice #8)
+    /* calibrationFactor*/ 1.0f,    //          empirical CT calibration
     /* ctRatio          */ 2000.0f, //          SCT-013-000 turns ratio
     /* burdenOhms       */ 22.0f,   // [ohm]    burden resistor
-    /* rmsWindowSeconds */ 1.0f,    // [s]      RMS window = 60 mains cycles (used from slice #7)
-    /* tariff           */ 0.92f,   // [R$/kWh] unused until the cost stage
+    /* rmsWindowSeconds */ 1.0f,    // [s]      RMS window = 60 mains cycles
+    /* tariff           */ 0.92f,   // [R$/kWh]
 };
 
 Adafruit_ADS1115 ads;
@@ -34,7 +35,7 @@ void setup() {
   }
 
   ads.setDataRate(RATE_ADS1115_860SPS);
-  // Continuous mode: the chip samples A0 non-stop.
+  // Continuous mode: the chip samples A0 continuously.
   ads.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, /*continuous=*/true);
   // 400 kHz I2C so reads keep up with 860 SPS.
   Wire.setClock(400000);
@@ -52,7 +53,6 @@ void loop() {
     // Hand the raw burden sample to the measurement module; it owns the logic.
     float centered = meter.addSample(volts);
 
-    // Slice #6 demo: estimated DC level and the offset-removed AC sample.
     Serial.print(">dc:");
     Serial.println(meter.dcLevel(), 4);
     Serial.print(">ac:");
