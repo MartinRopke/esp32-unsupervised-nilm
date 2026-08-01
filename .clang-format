@@ -1,0 +1,6 @@
+BasedOnStyle: Google
+
+# Google's default is 80; several existing lines (aligned trailing comments in
+# the config blocks, test assertions) already run longer without hurting
+# readability, so the limit is raised instead of forcing an immediate rewrap.
+ColumnLimit: 100
