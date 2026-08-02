@@ -56,7 +56,7 @@ void loop() {
     Serial.print(">dc:");
     Serial.println(meter.dcOffset(), 4);
     Serial.print(">ac:");
-    Serial.println(result.centered, 4);
+    Serial.println(result.acVolts, 4);
 
     if (result.windowClosed) {
       Serial.print(">vrms:");

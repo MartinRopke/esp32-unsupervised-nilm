@@ -20,7 +20,7 @@ struct MeterConfig {
 // Result of feeding one sample to the Meter. `vRms` is only meaningful when
 // `windowClosed` is true.
 struct SampleResult {
-  float centered;
+  float acVolts;  // burden voltage with the DC offset removed
   bool windowClosed;
   float vRms;
 };
@@ -30,9 +30,9 @@ class Meter {
   explicit Meter(const MeterConfig& config);
 
   // Feeds one raw burden voltage sample and its timestamp (micros()). The
-  // returned centered value has the DC offset removed. When this sample
-  // closes the RMS window (rmsWindowSeconds of config, closed by elapsed
-  // time), windowClosed is true and vRms carries the window's burden V_rms.
+  // returned acVolts has the DC offset removed. When this sample closes the
+  // RMS window (rmsWindowSeconds of config, closed by elapsed time),
+  // windowClosed is true and vRms carries the window's burden V_rms.
   SampleResult addSample(float volts, uint32_t timestampMicros);
 
   // Current exponential moving average (EMA) estimate of the DC offset
@@ -49,10 +49,11 @@ class Meter {
   // (windowing policy) independently of the DC offset filter.
   class RmsWindow {
    public:
-    // Feeds one centered sample. Returns true when windowMicros of elapsed
-    // time close the window on this call; vRms() then holds the result and
-    // the accumulator resets for the next window.
-    bool accumulate(float centered, uint32_t timestampMicros, uint32_t windowMicros);
+    // Feeds one acVolts sample (burden voltage, DC offset already removed).
+    // Returns true when windowMicros of elapsed time close the window on
+    // this call; vRms() then holds the result and the accumulator resets
+    // for the next window.
+    bool accumulate(float acVolts, uint32_t timestampMicros, uint32_t windowMicros);
 
     float vRms() const { return v_rms_; }
 

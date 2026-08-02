@@ -14,12 +14,12 @@ Meter::Meter(const MeterConfig& config) : config_(config), dc_offset_(0.0f), see
 
 SampleResult Meter::addSample(float volts, uint32_t timestampMicros) {
   updateDcOffset(volts);
-  float centered = volts - dc_offset_;
+  float acVolts = volts - dc_offset_;
 
   const auto windowMicros = static_cast<uint32_t>(config_.rmsWindowSeconds * kMicrosPerSecond);
-  bool closed = rms_window_.accumulate(centered, timestampMicros, windowMicros);
+  bool closed = rms_window_.accumulate(acVolts, timestampMicros, windowMicros);
 
-  return {centered, closed, rms_window_.vRms()};
+  return {acVolts, closed, rms_window_.vRms()};
 }
 
 void Meter::updateDcOffset(float volts) {
@@ -35,13 +35,13 @@ void Meter::updateDcOffset(float volts) {
 
 float Meter::dcOffset() const { return dc_offset_; }
 
-bool Meter::RmsWindow::accumulate(float centered, uint32_t timestampMicros, uint32_t windowMicros) {
+bool Meter::RmsWindow::accumulate(float acVolts, uint32_t timestampMicros, uint32_t windowMicros) {
   if (!started_) {
     start_micros_ = timestampMicros;
     started_ = true;
   }
 
-  sum_squares_ += centered * centered;
+  sum_squares_ += acVolts * acVolts;
   ++sample_count_;
 
   // Closed by elapsed time (a multiple of the mains cycle), not by a fixed

@@ -59,7 +59,7 @@ void test_pure_dc_centers_to_zero(void) {
   }
 
   TEST_ASSERT_FLOAT_WITHIN(1e-3f, dc, meter.dcOffset());
-  TEST_ASSERT_FLOAT_WITHIN(1e-3f, 0.0f, result.centered);
+  TEST_ASSERT_FLOAT_WITHIN(1e-3f, 0.0f, result.acVolts);
 }
 
 // A burden signal is a sine riding on the bias offset. After the estimate
@@ -80,8 +80,8 @@ void test_sine_offset_is_removed_ac_preserved(void) {
     SampleResult result = meter.addSample(volts, timestamp);
     timestamp += kSampleIntervalMicros;
     if (i >= 10000) {  // measure only after the estimate has settled
-      sum += result.centered;
-      if (result.centered > peak) peak = result.centered;
+      sum += result.acVolts;
+      if (result.acVolts > peak) peak = result.acVolts;
       ++counted;
     }
   }
