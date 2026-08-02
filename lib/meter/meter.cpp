@@ -46,7 +46,7 @@ bool Meter::RmsWindow::accumulate(float acVolts, uint32_t timestampMicros, uint3
 
   // Closed by elapsed time (a multiple of the mains cycle), not by a fixed
   // sample count: 860 SPS does not divide a 60 Hz cycle into a whole number
-  // of samples (ADR 0002).
+  // of samples.
   if (timestampMicros - start_micros_ < windowMicros) {
     return false;
   }
