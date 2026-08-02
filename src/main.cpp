@@ -48,10 +48,10 @@ void loop() {
     lastSampleMicros = now;
 
     int16_t raw = ads.getLastConversionResults();
-    float volts = ads.computeVolts(raw);
+    float burdenVolts = ads.computeVolts(raw);
 
     // Hand the raw burden sample to the measurement module; it owns the logic.
-    SampleResult result = meter.addSample(volts, now);
+    SampleResult result = meter.addSample(burdenVolts, now);
 
     Serial.print(">dc:");
     Serial.println(meter.dcOffset(), 4);

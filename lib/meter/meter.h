@@ -33,7 +33,7 @@ class Meter {
   // returned acVolts has the DC offset removed. When this sample closes the
   // RMS window (rmsWindowSeconds of config, closed by elapsed time),
   // windowClosed is true and vRms carries the window's burden V_rms.
-  SampleResult addSample(float volts, uint32_t timestampMicros);
+  SampleResult addSample(float burdenVolts, uint32_t timestampMicros);
 
   // Current exponential moving average (EMA) estimate of the DC offset
   // (bias offset).
@@ -42,7 +42,7 @@ class Meter {
  private:
   // Exponential moving average (EMA) update step: folds one raw sample into
   // the running DC offset estimate.
-  void updateDcOffset(float volts);
+  void updateDcOffset(float burdenVolts);
 
   // Accumulates the burden RMS voltage over a time closed window. Owns only
   // the window's accumulator state, so it changes for a single reason

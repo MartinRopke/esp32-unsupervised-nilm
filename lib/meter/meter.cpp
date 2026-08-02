@@ -12,9 +12,9 @@ static constexpr float kMicrosPerSecond = 1e6f;
 
 Meter::Meter(const MeterConfig& config) : config_(config), dc_offset_(0.0f), seeded_(false) {}
 
-SampleResult Meter::addSample(float volts, uint32_t timestampMicros) {
-  updateDcOffset(volts);
-  float acVolts = volts - dc_offset_;
+SampleResult Meter::addSample(float burdenVolts, uint32_t timestampMicros) {
+  updateDcOffset(burdenVolts);
+  float acVolts = burdenVolts - dc_offset_;
 
   const auto windowMicros = static_cast<uint32_t>(config_.rmsWindowSeconds * kMicrosPerSecond);
   bool closed = rms_window_.accumulate(acVolts, timestampMicros, windowMicros);
@@ -22,14 +22,14 @@ SampleResult Meter::addSample(float volts, uint32_t timestampMicros) {
   return {acVolts, closed, rms_window_.vRms()};
 }
 
-void Meter::updateDcOffset(float volts) {
+void Meter::updateDcOffset(float burdenVolts) {
   // Seed the estimate with the first sample so it starts near the real offset
   // instead of drifting up from zero.
   if (!seeded_) {
-    dc_offset_ = volts;
+    dc_offset_ = burdenVolts;
     seeded_ = true;
   } else {
-    dc_offset_ += (volts - dc_offset_) / kDcFilterWindow;
+    dc_offset_ += (burdenVolts - dc_offset_) / kDcFilterWindow;
   }
 }
 

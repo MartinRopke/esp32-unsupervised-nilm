@@ -76,8 +76,8 @@ void test_sine_offset_is_removed_ac_preserved(void) {
   int counted = 0;
   uint32_t timestamp = 0;
   for (int i = 0; i < 20000; ++i) {
-    float volts = offset + amplitude * sinf(radPerSample * i);
-    SampleResult result = meter.addSample(volts, timestamp);
+    float burdenVolts = offset + amplitude * sinf(radPerSample * i);
+    SampleResult result = meter.addSample(burdenVolts, timestamp);
     timestamp += kSampleIntervalMicros;
     if (i >= 10000) {  // measure only after the estimate has settled
       sum += result.acVolts;
