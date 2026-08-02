@@ -51,11 +51,16 @@ void loop() {
     float volts = ads.computeVolts(raw);
 
     // Hand the raw burden sample to the measurement module; it owns the logic.
-    float centered = meter.addSample(volts);
+    SampleResult result = meter.addSample(volts, now);
 
     Serial.print(">dc:");
     Serial.println(meter.dcOffset(), 4);
     Serial.print(">ac:");
-    Serial.println(centered, 4);
+    Serial.println(result.centered, 4);
+
+    if (result.windowClosed) {
+      Serial.print(">vrms:");
+      Serial.println(result.vRms, 4);
+    }
   }
 }
