@@ -54,7 +54,7 @@ void loop() {
     float centered = meter.addSample(volts);
 
     Serial.print(">dc:");
-    Serial.println(meter.dcLevel(), 4);
+    Serial.println(meter.dcOffset(), 4);
     Serial.print(">ac:");
     Serial.println(centered, 4);
   }

@@ -16,7 +16,7 @@ static MeterConfig makeConfig() {
 }
 
 // A pure DC signal has no AC component: once the DC estimate settles, the
-// estimated DC level equals the input and the centered sample is ~zero.
+// estimated DC offset equals the input and the centered sample is ~zero.
 void test_pure_dc_centers_to_zero(void) {
   Meter meter(makeConfig());
   const float dc = 1.65f;
@@ -26,12 +26,12 @@ void test_pure_dc_centers_to_zero(void) {
     centered = meter.addSample(dc);
   }
 
-  TEST_ASSERT_FLOAT_WITHIN(1e-3f, dc, meter.dcLevel());
+  TEST_ASSERT_FLOAT_WITHIN(1e-3f, dc, meter.dcOffset());
   TEST_ASSERT_FLOAT_WITHIN(1e-3f, 0.0f, centered);
 }
 
 // A burden signal is a sine riding on the bias offset. After the estimate
-// settles, the DC level equals the injected offset (not pulled by the AC), the
+// settles, the DC offset equals the injected offset (not pulled by the AC), the
 // centered samples have ~zero mean, and the AC swing is preserved (not flattened).
 void test_sine_offset_is_removed_ac_preserved(void) {
   Meter meter(makeConfig());
@@ -52,7 +52,7 @@ void test_sine_offset_is_removed_ac_preserved(void) {
     }
   }
 
-  TEST_ASSERT_FLOAT_WITHIN(1e-3f, offset, meter.dcLevel());
+  TEST_ASSERT_FLOAT_WITHIN(1e-3f, offset, meter.dcOffset());
   TEST_ASSERT_FLOAT_WITHIN(1e-3f, 0.0f, (float)(sum / counted));
   TEST_ASSERT_FLOAT_WITHIN(5e-3f, amplitude, peak);
 }
