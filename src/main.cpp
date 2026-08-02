@@ -21,10 +21,10 @@ static constexpr MeterConfig kConfig = {
 Adafruit_ADS1115 ads;
 Meter meter(kConfig);
 
-unsigned long lastSampleMicros = 0;
+uint32_t lastSampleMicros{0};
 
 // 1,000,000 us / 860 SPS = ~1163 us per sample.
-constexpr unsigned long sampleIntervalMicros = 1163;
+static constexpr uint32_t sampleIntervalMicros = 1163;
 
 void setup() {
   Serial.begin(921600);
@@ -42,7 +42,7 @@ void setup() {
 }
 
 void loop() {
-  unsigned long now = micros();
+  uint32_t now{micros()};
 
   if (now - lastSampleMicros >= sampleIntervalMicros) {
     lastSampleMicros = now;

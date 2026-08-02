@@ -53,7 +53,7 @@ void test_sine_offset_is_removed_ac_preserved(void) {
   }
 
   TEST_ASSERT_FLOAT_WITHIN(1e-3f, offset, meter.dcOffset());
-  TEST_ASSERT_FLOAT_WITHIN(1e-3f, 0.0f, (float)(sum / counted));
+  TEST_ASSERT_FLOAT_WITHIN(1e-3f, 0.0f, static_cast<float>(sum / counted));
   TEST_ASSERT_FLOAT_WITHIN(5e-3f, amplitude, peak);
 }
 
