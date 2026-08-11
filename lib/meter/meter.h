@@ -49,15 +49,18 @@ class Meter {
   // (windowing policy) independently of the DC offset filter.
   class RmsWindow {
    public:
+    explicit RmsWindow(float windowSeconds);
+
     // Feeds one acVolts sample (burden voltage, DC offset already removed).
-    // Returns true when windowMicros of elapsed time close the window on
+    // Returns true when window_micros_ of elapsed time close the window on
     // this call; vRms() then holds the result and the accumulator resets
     // for the next window.
-    bool accumulate(float acVolts, uint32_t timestampMicros, uint32_t windowMicros);
+    bool accumulate(float acVolts, uint32_t timestampMicros);
 
     float vRms() const { return v_rms_; }
 
    private:
+    const uint32_t window_micros_;
     float sum_squares_ = 0.0f;
     uint32_t sample_count_ = 0;
     uint32_t start_micros_ = 0;
