@@ -17,13 +17,14 @@ struct MeterConfig {
   float tariff;             // TARIFF         [R$/kWh]
 };
 
-// Result of feeding one sample to the Meter. `vRms` and `iRms` are only
-// meaningful when `windowClosed` is true.
+// Result of feeding one sample to the Meter. `vRms`, `iRms`, and
+// `apparentPower` are only meaningful when `windowClosed` is true.
 struct SampleResult {
   float acVolts;  // burden voltage with the DC offset removed
   bool windowClosed;
-  float vRms;  // burden RMS voltage
-  float iRms;  // primary RMS current, converted from vRms via config
+  float vRms;           // burden RMS voltage
+  float iRms;           // primary RMS current, converted from vRms via config
+  float apparentPower;  // S = mainsVoltage * iRms [VA]
 };
 
 class Meter {
@@ -96,4 +97,5 @@ class Meter {
   VRmsWindow v_rms_window_;
   float v_rms_ = 0.0f;
   float i_rms_ = 0.0f;
+  float apparent_power_ = 0.0f;
 };

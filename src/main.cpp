@@ -63,6 +63,8 @@ void loop() {
       Serial.println(result.vRms, 4);
       Serial.print(">irms:");
       Serial.println(result.iRms, 4);
+      Serial.print(">power:");
+      Serial.println(result.apparentPower, 4);
     }
   }
 }

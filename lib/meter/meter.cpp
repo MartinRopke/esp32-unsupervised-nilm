@@ -20,9 +20,10 @@ SampleResult Meter::addSample(float burdenVolts, uint32_t timestampMicros) {
   if (window.closed) {
     v_rms_ = window.vRms;
     i_rms_ = toIRms(v_rms_);
+    apparent_power_ = config_.mainsVoltage * i_rms_;
   }
 
-  return {acVolts, window.closed, v_rms_, i_rms_};
+  return {acVolts, window.closed, v_rms_, i_rms_, apparent_power_};
 }
 
 float Meter::toIRms(float vRms) const {

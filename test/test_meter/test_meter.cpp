@@ -195,6 +195,62 @@ void test_sine_window_irms_matches_calibrated_conversion(void) {
   TEST_ASSERT_FLOAT_WITHIN(5e-3f * conversionGain, expectedIrms, run.result.iRms);
 }
 
+// The apparent power is the RMS current scaled by the configured mains
+// voltage: S = MAINS_VOLTAGE * I_rms (VA).
+void test_sine_window_apparent_power_matches_mains_voltage_times_irms(void) {
+  MeterConfig config = makeConfig();
+  config.burdenOhms = 22.0f;
+  config.ctRatio = 2000.0f;
+  config.calibrationFactor = 1.5f;
+  config.mainsVoltage = 220.0f;
+  Meter meter(config);
+  const float offset = 1.65f;
+  const float amplitude = 0.1f;
+  const float radPerSample = 2.0f * 3.14159265358979f * 60.0f / 860.0f;  // 60 Hz at 860 SPS
+  auto sineSignal = [&](int i) { return offset + amplitude * sinf(radPerSample * i); };
+
+  // Warm up the DC estimate before trusting any window's V_rms.
+  uint32_t timestamp = 0;
+  int i = 0;
+  for (; i < 10000; ++i) {
+    meter.addSample(sineSignal(i), timestamp);
+    timestamp += kSampleIntervalMicros;
+  }
+
+  WindowRun run = runUntilWindowCloses(meter, sineSignal, kSampleIntervalMicros, timestamp, i);
+
+  const float expectedVrms = amplitude / sqrtf(2.0f);
+  const float conversionGain = config.ctRatio / config.burdenOhms * config.calibrationFactor;
+  const float expectedIrms = expectedVrms * conversionGain;
+  const float expectedApparentPower = config.mainsVoltage * expectedIrms;
+  TEST_ASSERT_FLOAT_WITHIN(5e-3f * conversionGain * config.mainsVoltage, expectedApparentPower,
+                           run.result.apparentPower);
+}
+
+// Switching MAINS_VOLTAGE (e.g. 220 -> 127) changes the apparent power
+// proportionally, with no other code change: apparent power depends only on
+// the injected config, not on the measurement logic.
+void test_switching_mains_voltage_changes_apparent_power_proportionally(void) {
+  MeterConfig config220 = makeConfig();
+  config220.mainsVoltage = 220.0f;
+  Meter meter220(config220);
+  MeterConfig config127 = makeConfig();
+  config127.mainsVoltage = 127.0f;
+  Meter meter127(config127);
+
+  const float offset = 1.65f;
+  const float amplitude = 0.1f;
+  const float radPerSample = 2.0f * 3.14159265358979f * 60.0f / 860.0f;  // 60 Hz at 860 SPS
+  auto sineSignal = [&](int i) { return offset + amplitude * sinf(radPerSample * i); };
+
+  WindowRun run220 = runUntilWindowCloses(meter220, sineSignal, kSampleIntervalMicros);
+  WindowRun run127 = runUntilWindowCloses(meter127, sineSignal, kSampleIntervalMicros);
+
+  TEST_ASSERT_FLOAT_WITHIN(1e-4f, run220.result.iRms, run127.result.iRms);
+  TEST_ASSERT_FLOAT_WITHIN(1e-3f, 220.0f / 127.0f,
+                           run220.result.apparentPower / run127.result.apparentPower);
+}
+
 void setUp(void) {}
 void tearDown(void) {}
 
@@ -207,5 +263,7 @@ int main(int, char**) {
   RUN_TEST(test_window_closes_by_elapsed_time_not_sample_count);
   RUN_TEST(test_first_window_before_dc_settles_is_bounded);
   RUN_TEST(test_sine_window_irms_matches_calibrated_conversion);
+  RUN_TEST(test_sine_window_apparent_power_matches_mains_voltage_times_irms);
+  RUN_TEST(test_switching_mains_voltage_changes_apparent_power_proportionally);
   return UNITY_END();
 }
