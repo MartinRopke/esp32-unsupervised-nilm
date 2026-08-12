@@ -10,42 +10,45 @@ static constexpr float kDcFilterWindow = 1024.0f;
 
 static constexpr float kMicrosPerSecond = 1e6f;
 
-Meter::Meter(const MeterConfig& config)
-    : config_(config), dc_offset_(0.0f), seeded_(false), rms_window_(config.rmsWindowSeconds) {}
+Meter::Meter(const MeterConfig& config) : config_(config), v_rms_window_(config.rmsWindowSeconds) {}
 
 SampleResult Meter::addSample(float burdenVolts, uint32_t timestampMicros) {
-  updateDcOffset(burdenVolts);
-  float acVolts = burdenVolts - dc_offset_;
+  float dcOffset = dc_offset_filter_.update(burdenVolts);
+  float acVolts = burdenVolts - dcOffset;
 
-  bool closed = rms_window_.accumulate(acVolts, timestampMicros);
-  if (closed) {
-    i_rms_ = toIRms(rms_window_.vRms());
+  VRmsWindow::Result window = v_rms_window_.accumulate(acVolts, timestampMicros);
+  if (window.closed) {
+    v_rms_ = window.vRms;
+    i_rms_ = toIRms(v_rms_);
   }
 
-  return {acVolts, closed, rms_window_.vRms(), i_rms_};
+  return {acVolts, window.closed, v_rms_, i_rms_};
 }
 
 float Meter::toIRms(float vRms) const {
   return vRms / config_.burdenOhms * config_.ctRatio * config_.calibrationFactor;
 }
 
-void Meter::updateDcOffset(float burdenVolts) {
+float Meter::dcOffset() const { return dc_offset_filter_.value(); }
+
+float Meter::DcOffsetFilter::update(float burdenVolts) {
   // Seed the estimate with the first sample so it starts near the real offset
   // instead of drifting up from zero.
   if (!seeded_) {
-    dc_offset_ = burdenVolts;
     seeded_ = true;
+    dc_offset_ = burdenVolts;
   } else {
     dc_offset_ += (burdenVolts - dc_offset_) / kDcFilterWindow;
   }
+  return dc_offset_;
 }
 
-float Meter::dcOffset() const { return dc_offset_; }
+float Meter::DcOffsetFilter::value() const { return dc_offset_; }
 
-Meter::RmsWindow::RmsWindow(float windowSeconds)
+Meter::VRmsWindow::VRmsWindow(float windowSeconds)
     : window_micros_(static_cast<uint32_t>(windowSeconds * kMicrosPerSecond)) {}
 
-bool Meter::RmsWindow::accumulate(float acVolts, uint32_t timestampMicros) {
+Meter::VRmsWindow::Result Meter::VRmsWindow::accumulate(float acVolts, uint32_t timestampMicros) {
   if (!started_) {
     start_micros_ = timestampMicros;
     started_ = true;
@@ -58,10 +61,10 @@ bool Meter::RmsWindow::accumulate(float acVolts, uint32_t timestampMicros) {
   // sample count: 860 SPS does not divide a 60 Hz cycle into a whole number
   // of samples.
   if (timestampMicros - start_micros_ < window_micros_) {
-    return false;
+    return {false, 0.0f};
   }
 
-  v_rms_ = sqrtf(sum_squares_ / static_cast<float>(sample_count_));
+  float vRms = sqrtf(sum_squares_ / static_cast<float>(sample_count_));
 
   sum_squares_ = 0.0f;
   sample_count_ = 0;
@@ -70,5 +73,5 @@ bool Meter::RmsWindow::accumulate(float acVolts, uint32_t timestampMicros) {
   // first sample instead of drifting later by one sample interval each time.
   start_micros_ += window_micros_;
 
-  return true;
+  return {true, vRms};
 }

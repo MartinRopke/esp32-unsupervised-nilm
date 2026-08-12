@@ -41,30 +41,47 @@ class Meter {
   float dcOffset() const;
 
  private:
-  // Exponential moving average (EMA) update step: folds one raw sample into
-  // the running DC offset estimate.
-  void updateDcOffset(float burdenVolts);
-
   // Converts a burden RMS voltage into primary RMS current via the
   // calibration chain: I_secondary = vRms / burdenOhms, I_primary =
   // I_secondary * ctRatio, scaled by the single empirical calibrationFactor
   // so it can be tuned without recompiling the logic.
   float toIRms(float vRms) const;
 
+  // Exponential moving average (EMA) estimator of the DC offset (bias
+  // offset).
+  class DcOffsetFilter {
+   public:
+    // Feeds one raw sample; returns the updated DC offset estimate. Seeds
+    // the estimate with the first sample so it starts near the real offset
+    // instead of drifting up from zero.
+    float update(float burdenVolts);
+
+    float value() const;
+
+   private:
+    float dc_offset_ = 0.0f;
+    bool seeded_ = false;
+  };
+
   // Accumulates the burden RMS voltage over a time closed window. Owns only
   // the window's accumulator state, so it changes for a single reason
   // (windowing policy) independently of the DC offset filter.
-  class RmsWindow {
+  class VRmsWindow {
    public:
-    explicit RmsWindow(float windowSeconds);
+    explicit VRmsWindow(float windowSeconds);
+
+    // Result of feeding one sample. `vRms` is only meaningful when `closed`
+    // is true.
+    struct Result {
+      bool closed;
+      float vRms;
+    };
 
     // Feeds one acVolts sample (burden voltage, DC offset already removed).
-    // Returns true when window_micros_ of elapsed time close the window on
-    // this call; vRms() then holds the result and the accumulator resets
-    // for the next window.
-    bool accumulate(float acVolts, uint32_t timestampMicros);
-
-    float vRms() const { return v_rms_; }
+    // closed is true when window_micros_ of elapsed time close the window
+    // on this call; vRms then carries the window's result and the
+    // accumulator resets for the next window.
+    Result accumulate(float acVolts, uint32_t timestampMicros);
 
    private:
     const uint32_t window_micros_;
@@ -72,12 +89,11 @@ class Meter {
     uint32_t sample_count_ = 0;
     uint32_t start_micros_ = 0;
     bool started_ = false;
-    float v_rms_ = 0.0f;
   };
 
   MeterConfig config_;
-  float dc_offset_;
-  bool seeded_;
-  RmsWindow rms_window_;
+  DcOffsetFilter dc_offset_filter_;
+  VRmsWindow v_rms_window_;
+  float v_rms_ = 0.0f;
   float i_rms_ = 0.0f;
 };
