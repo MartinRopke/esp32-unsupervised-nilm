@@ -35,8 +35,9 @@ void setup() {
   }
 
   ads.setDataRate(RATE_ADS1115_860SPS);
-  // Continuous mode: the chip samples A0 continuously.
-  ads.startADCReading(ADS1X15_REG_CONFIG_MUX_SINGLE_0, /*continuous=*/true);
+  ads.setGain(GAIN_SIXTEEN);
+  // Continuous mode: the chip samples the A0-A1 differential continuously.
+  ads.startADCReading(ADS1X15_REG_CONFIG_MUX_DIFF_0_1, /*continuous=*/true);
   // 400 kHz I2C so reads keep up with 860 SPS.
   Wire.setClock(400000);
 }
