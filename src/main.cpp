@@ -11,7 +11,7 @@
 // ---------------------------------------------------------------------------
 static constexpr MeterConfig kConfig = {
     /* mainsVoltage     */ 220.0f,   // [V]      switch to 127.0f on a 127 V installation
-    /* calibrationFactor*/ 1.0f,     //          empirical CT calibration
+    /* calibrationFactor*/ 0.9271f,  //          empirical CT calibration
     /* ctRatio          */ 2000.0f,  //          SCT-013-000 turns ratio
     /* burdenOhms       */ 22.0f,    // [ohm]    burden resistor
     /* rmsWindowSeconds */ 1.0f,     // [s]      RMS window = 60 mains cycles
@@ -61,6 +61,8 @@ void loop() {
     if (result.windowClosed) {
       Serial.print(">vrms:");
       Serial.println(result.vRms, 4);
+      Serial.print(">irms:");
+      Serial.println(result.iRms, 4);
     }
   }
 }

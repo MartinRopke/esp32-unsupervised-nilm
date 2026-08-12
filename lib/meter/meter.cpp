@@ -18,8 +18,15 @@ SampleResult Meter::addSample(float burdenVolts, uint32_t timestampMicros) {
   float acVolts = burdenVolts - dc_offset_;
 
   bool closed = rms_window_.accumulate(acVolts, timestampMicros);
+  if (closed) {
+    i_rms_ = toIRms(rms_window_.vRms());
+  }
 
-  return {acVolts, closed, rms_window_.vRms()};
+  return {acVolts, closed, rms_window_.vRms(), i_rms_};
+}
+
+float Meter::toIRms(float vRms) const {
+  return vRms / config_.burdenOhms * config_.ctRatio * config_.calibrationFactor;
 }
 
 void Meter::updateDcOffset(float burdenVolts) {

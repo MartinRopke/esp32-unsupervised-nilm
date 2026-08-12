@@ -17,12 +17,13 @@ struct MeterConfig {
   float tariff;             // TARIFF         [R$/kWh]
 };
 
-// Result of feeding one sample to the Meter. `vRms` is only meaningful when
-// `windowClosed` is true.
+// Result of feeding one sample to the Meter. `vRms` and `iRms` are only
+// meaningful when `windowClosed` is true.
 struct SampleResult {
   float acVolts;  // burden voltage with the DC offset removed
   bool windowClosed;
-  float vRms;
+  float vRms;  // burden RMS voltage
+  float iRms;  // primary RMS current, converted from vRms via config
 };
 
 class Meter {
@@ -43,6 +44,12 @@ class Meter {
   // Exponential moving average (EMA) update step: folds one raw sample into
   // the running DC offset estimate.
   void updateDcOffset(float burdenVolts);
+
+  // Converts a burden RMS voltage into primary RMS current via the
+  // calibration chain: I_secondary = vRms / burdenOhms, I_primary =
+  // I_secondary * ctRatio, scaled by the single empirical calibrationFactor
+  // so it can be tuned without recompiling the logic.
+  float toIRms(float vRms) const;
 
   // Accumulates the burden RMS voltage over a time closed window. Owns only
   // the window's accumulator state, so it changes for a single reason
@@ -72,4 +79,5 @@ class Meter {
   float dc_offset_;
   bool seeded_;
   RmsWindow rms_window_;
+  float i_rms_ = 0.0f;
 };

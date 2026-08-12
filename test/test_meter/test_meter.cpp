@@ -31,7 +31,7 @@ struct WindowRun {
 // intervalMicros, beginning at startTimestamp, until the RMS window closes.
 template <typename SignalFn>
 static WindowRun runUntilWindowCloses(Meter& meter, SignalFn signal, uint32_t intervalMicros,
-                                       uint32_t startTimestamp = 0, int startIndex = 0) {
+                                      uint32_t startTimestamp = 0, int startIndex = 0) {
   uint32_t timestamp = startTimestamp;
   SampleResult result{};
   int i = startIndex;
@@ -154,12 +154,45 @@ void test_first_window_before_dc_settles_is_bounded(void) {
   const float amplitude = 0.1f;
   const float radPerSample = 2.0f * 3.14159265358979f * 60.0f / 860.0f;  // 60 Hz at 860 SPS
   const int startPhase = 5;  // off the zero crossing, so the DC seed is imperfect
-  auto sineSignal = [&](int i) { return offset + amplitude * sinf(radPerSample * (i + startPhase)); };
+  auto sineSignal = [&](int i) {
+    return offset + amplitude * sinf(radPerSample * (i + startPhase));
+  };
 
   WindowRun run = runUntilWindowCloses(meter, sineSignal, kSampleIntervalMicros);
 
   TEST_ASSERT_TRUE(std::isfinite(run.result.vRms));
   TEST_ASSERT_TRUE(run.result.vRms < offset);
+}
+
+// The primary RMS current is the burden V_rms converted via the calibration
+// chain in config: I_rms = V_rms / BURDEN_OHMS * CT_RATIO * CALIBRATION_FACTOR.
+// A calibrationFactor other than 1.0 distinguishes "converted" from "just
+// V_rms passed through".
+void test_sine_window_irms_matches_calibrated_conversion(void) {
+  MeterConfig config = makeConfig();
+  config.burdenOhms = 22.0f;
+  config.ctRatio = 2000.0f;
+  config.calibrationFactor = 1.5f;
+  Meter meter(config);
+  const float offset = 1.65f;
+  const float amplitude = 0.1f;
+  const float radPerSample = 2.0f * 3.14159265358979f * 60.0f / 860.0f;  // 60 Hz at 860 SPS
+  auto sineSignal = [&](int i) { return offset + amplitude * sinf(radPerSample * i); };
+
+  // Warm up the DC estimate before trusting any window's V_rms.
+  uint32_t timestamp = 0;
+  int i = 0;
+  for (; i < 10000; ++i) {
+    meter.addSample(sineSignal(i), timestamp);
+    timestamp += kSampleIntervalMicros;
+  }
+
+  WindowRun run = runUntilWindowCloses(meter, sineSignal, kSampleIntervalMicros, timestamp, i);
+
+  const float expectedVrms = amplitude / sqrtf(2.0f);
+  const float conversionGain = config.ctRatio / config.burdenOhms * config.calibrationFactor;
+  const float expectedIrms = expectedVrms * conversionGain;
+  TEST_ASSERT_FLOAT_WITHIN(5e-3f * conversionGain, expectedIrms, run.result.iRms);
 }
 
 void setUp(void) {}
@@ -173,5 +206,6 @@ int main(int, char**) {
   RUN_TEST(test_sine_window_vrms_matches_amplitude_over_sqrt2);
   RUN_TEST(test_window_closes_by_elapsed_time_not_sample_count);
   RUN_TEST(test_first_window_before_dc_settles_is_bounded);
+  RUN_TEST(test_sine_window_irms_matches_calibrated_conversion);
   return UNITY_END();
 }
