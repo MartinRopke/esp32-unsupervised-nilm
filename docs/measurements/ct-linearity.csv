@@ -1,0 +1,5 @@
+load,nominal_w,i_approx_a,v_burden_mm_mv,v_burden_fw_mv,samples,deviation_pct,k_required
+fan,50,0.19,2.85,2.123,46,-25.51,1.3424
+soldering iron,60,0.26,3.45,2.899,46,-15.97,1.1901
+laptop charger,65,0.47,5.75,4.618,45,-19.69,1.2451
+sandwich maker,686,3.18,37.1,36.545,27,-1.50,1.0152

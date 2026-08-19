@@ -62,7 +62,7 @@ void loop() {
 
     if (result.windowClosed) {
       Serial.print(">vrms:");
-      Serial.println(result.vRms, 4);
+      Serial.println(result.vRms, 6);
       Serial.print(">irms:");
       Serial.println(result.iRms, 4);
       Serial.print(">power:");

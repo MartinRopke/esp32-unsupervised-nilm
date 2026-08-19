@@ -77,3 +77,89 @@ that path remains open in #10.
 
 Because the factor is a single multiplier and `vrms` is recorded in every log,
 data captured before any change can be reprocessed rather than re-measured.
+
+## Direct burden-voltage calibration (issue #10)
+
+Capture date: 18 Aug 2026
+Firmware commit: `1741336` (differential `GAIN_SIXTEEN` chain, `calibrationFactor = 1.0212`)
+
+Multimeter: Fluke 117 (True RMS), mV AC mode — fixed 600.0 mV range, 0.1 mV
+resolution, accuracy ±(1.0% of reading + 3 counts) at 45-500 Hz. Probed
+directly across the burden resistor's two terminals (the same A0/A1 nodes the
+ADC differences), removing the nameplate-power dependency of the calibration
+above per the methodology in #10.
+
+Rig: same installation as above. Two resistive loads (PF ≈ 1) read at thermal
+steady state via the live serial stream (`vrms`/`irms`/`power` at 1 Hz). The
+sandwich maker's reading was taken only after its thermostat had cycled off
+and back on once, following the same precaution as the original #8
+methodology; the soldering iron has no thermostat and was read after its
+initial ramp settled.
+
+### Point 1 — soldering iron (60 W nameplate, no thermostat)
+
+| quantity | value |
+|---|---|
+| `V_burden` (multimeter) | 3.4-3.5 mV, mean 3.45 mV |
+| firmware `vrms` (back-calculated, n=41 samples, ~40 s plateau) | ~2.90 mV |
+| firmware `irms` (reported, calibrated) | 0.2690 A |
+
+```
+I_ref          = V_burden / 22 Ω × 2000            = 0.3136 A
+I_uncalibrated = irms_reported / 1.0212            = 0.2634 A
+k_new          = I_ref / I_uncalibrated            = 1.19
+```
+
+### Point 2 — sandwich maker (686 W nameplate, thermostatic)
+
+| quantity | value |
+|---|---|
+| `V_burden` (multimeter) | 37.2-37.3 mV, mean 37.25 mV |
+| firmware `vrms` (reported, n=24 samples — cycle cut out mid-collection) | 35.0 mV |
+| firmware `irms` (reported, calibrated) | 3.2508 A |
+
+```
+I_ref          = V_burden / 22 Ω × 2000            = 3.386 A
+I_uncalibrated = irms_reported / 1.0212            = 3.183 A
+k_new          = I_ref / I_uncalibrated            = 1.0639
+```
+
+## Conclusion
+
+The two points disagree on `k_new` (1.19 vs. 1.0639) by more than measurement
+noise alone should explain. The original reading here attributed that entirely
+to the iron's `V_burden` sitting near the multimeter's resolution floor,
+compounded by the heating element's resistance rising at operating
+temperature (the #8 explanation). That reading is **superseded** by the
+four-point characterisation in #15 (`docs/measurements/ct-linearity.md`):
+measuring two more loads in the same low-current region (fan, laptop
+charger — both, like the iron, under 0.5% of the CT's 100 A rating) showed
+the same large correction the iron needed (`k_required` 1.19-1.34), while the
+sandwich maker (3.18% of rating) needed a much smaller one (1.02) that does
+not overlap the other three even accounting for the multimeter's resolution
+floor.
+
+That pattern — a large, roughly consistent correction across every load
+under ~0.5% of the CT's rated current, and a much smaller one at 3.18% of
+rating — is consistent with the CT's magnetising current becoming
+non-negligible at small fractions of its rating, not solely with multimeter
+noise. The multimeter's resolution floor is still real and does limit how
+finely the three low-current points can be distinguished from each other
+(see #15's uncertainty analysis), but it does not explain why *all three* of
+them disagree with the sandwich maker in the same direction and by a similar
+amount.
+
+**Firmware change pending**: `calibrationFactor` is still `1.0212` in
+`main.cpp` as of this commit. Setting it follows from the shape of the #15
+curve and is tracked separately, together with how the residual error is
+declared in the thesis — see #15's "What this does not do".
+
+## Uncertainty
+
+The dominant term is no longer attributed solely to the multimeter's
+resolution floor at one point (the iron). #15 shows the correction needed is
+load-dependent across the CT's low-current range, so a single factor tuned
+against any one load — including the sandwich maker point used here — will
+under-correct the smaller loads that are also test loads in this work (fan,
+laptop charger). See #15 for the full four-point picture and its own
+uncertainty analysis.
