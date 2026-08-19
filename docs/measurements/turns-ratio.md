@@ -131,6 +131,66 @@ measurement; 1800 is not.**
 This rests on one current point (3.36 A) rather than the two-method,
 multi-current cross-check the issue originally called for — see below.
 
+## Uncertainty budget
+
+`ratio_effective = (V_mains / R) / (V_burden / 22 Ω)`, so the uncertainty of
+the derived `calibrationFactor` is the combination of the terms feeding that
+expression.
+
+**Two terms cancel and do not contribute.** The burden resistor's tolerance
+and the ADC's gain error appear both in the measurement that fixes the factor
+and in the firmware computation that later applies it. Whatever their true
+values, they divide out. This is why the result is tighter than a naive sum
+of component tolerances would suggest.
+
+**Terms that do contribute:**
+
+| term | contribution | basis |
+|---|---|---|
+| `V_mains` | 1.13% | Fluke 117, ±(1.0% + 3 digits) at 236.75 V |
+| `V_burden` (firmware) | 0.13% | cycle-to-cycle repeatability, two on-cycles |
+| `R` of the sandwich maker | **not bounded** | nameplate only |
+
+Combining the two bounded terms gives 1.14%. That figure is **not** the
+uncertainty of the calibration, because the third term is missing rather
+than small.
+
+**On the unbounded term.** `R = 220² / 686 = 70.5539 Ω` is derived entirely
+from the appliance's nameplate. Nameplate power ratings for heating
+appliances carry a manufacturing tolerance that is not established anywhere
+in this work. Earlier drafts cited agreement with two smart-plug readings
+(70.51 Ω, 70.68 Ω) as evidence that the nameplate is accurate to 0.2%. **That
+justification has been withdrawn**: the smart plug is the ground truth
+reserved for validating the system, and using it to underwrite the
+calibration would make the validation partly self-referential — the same
+contamination the project avoids elsewhere, in a subtler form.
+
+Consequently the calibration's uncertainty is bounded below by 1.14% and
+above by the nameplate's tolerance, which is unknown here. Quote it as
+"limited by the appliance nameplate", not as a number.
+
+**A caveat on the caveat:** the Fluke 117 accuracy figure above is the
+commonly published specification, not confirmed against this unit's own
+manual.
+
+## How to close the unbounded term
+
+Measure `R` directly, without the smart plug:
+
+1. With the sandwich maker unplugged and cold, measure its element resistance
+   on the multimeter's Ω range. This gives `R_cold` from a traceable
+   instrument.
+2. Capture the firmware's `vrms` from cold switch-on through to thermal
+   steady state. Since `I ∝ 1/R` at constant mains voltage,
+   `R_hot = R_cold × (vrms_cold / vrms_hot)`.
+
+The second step is a *ratio* of the firmware against itself, so it needs no
+absolute calibration and introduces no external instrument. Together they
+bound `R` and would bring the total uncertainty back to roughly 1.2%.
+
+Worth doing before the validation stage, since this uncertainty sets the
+floor on any accuracy figure the work can claim.
+
 ## What this does not do
 
 - **Does not set `ctRatio` or `calibrationFactor`.** Both are left
