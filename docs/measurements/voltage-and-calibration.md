@@ -126,28 +126,40 @@ k_new          = I_ref / I_uncalibrated            = 1.0639
 
 ## Conclusion
 
-The two points disagree on `k_new` (1.19 vs. 1.0639) by more than measurement
-noise alone should explain. The original reading here attributed that entirely
-to the iron's `V_burden` sitting near the multimeter's resolution floor,
-compounded by the heating element's resistance rising at operating
-temperature (the #8 explanation). That reading is **superseded** by the
-four-point characterisation in #15 (`docs/measurements/ct-linearity.md`):
-measuring two more loads in the same low-current region (fan, laptop
-charger — both, like the iron, under 0.5% of the CT's 100 A rating) showed
-the same large correction the iron needed (`k_required` 1.19-1.34), while the
-sandwich maker (3.18% of rating) needed a much smaller one (1.02) that does
-not overlap the other three even accounting for the multimeter's resolution
-floor.
+**Only Point 2 is usable.** The Fluke 117 specifies AC accuracy from 1% to
+100% of range, i.e. at or above 6.0 mV on its 600 mV mV-AC range. The
+soldering iron's 3.45 mV falls below that floor; the sandwich maker's
+37.1 mV does not. The `k_new` of 1.19 from Point 1 carries no weight, and the
+apparent disagreement between the two points is a property of the meter, not
+of the sensor.
 
-That pattern — a large, roughly consistent correction across every load
-under ~0.5% of the CT's rated current, and a much smaller one at 3.18% of
-rating — is consistent with the CT's magnetising current becoming
-non-negligible at small fractions of its rating, not solely with multimeter
-noise. The multimeter's resolution floor is still real and does limit how
-finely the three low-current points can be distinguished from each other
-(see #15's uncertainty analysis), but it does not explain why *all three* of
-them disagree with the sandwich maker in the same direction and by a similar
-amount.
+That the transformer cannot be the cause follows from three independent
+arguments, developed at length in `PESQUISA-sct013-baixa-corrente.md`
+(outside the repository) and in `ct-linearity.md`.
+
+The decisive one is structural: the multimeter and the firmware measure
+the *same physical node*, the voltage across the 22 Ω burden. Any ratio error
+of the transformer is already contained in that voltage and affects both
+instruments identically, so it cannot produce a disagreement between them.
+
+Two further checks point the same way. Converting the readings into an
+apparent turns ratio, the multimeter implies 1467:1 at the fan, *below* the
+nominal ratio — impossible for a passive transformer, whose magnetising
+current can only raise the apparent ratio, never lower it. And the Fluke 117
+specifies AC accuracy only from 1% to 100% of range, i.e. at or above 6.0 mV
+on the 600 mV mV-AC range: three of the four points sit below that floor, and
+the only point inside it (the sandwich maker, 37.1 mV) is the only one where
+the instruments agree.
+
+The observed gap is roughly constant in absolute terms (0.55-0.73 mV across
+loads differing seventeen-fold in current) rather than proportional, which is
+the signature of an instrumentation offset — consistent with the meter's mV
+AC range being DC-coupled while the firmware removes the mean, and with the
+two differing in bandwidth.
+
+**The discrepancy is a measurement artifact.** `k_new = 1.0639`, from the
+sandwich maker, is the only value supported by a measurement taken inside the
+meter's specified range.
 
 **Firmware change pending**: `calibrationFactor` is still `1.0212` in
 `main.cpp` as of this commit. Setting it follows from the shape of the #15
@@ -156,10 +168,45 @@ declared in the thesis — see #15's "What this does not do".
 
 ## Uncertainty
 
-The dominant term is no longer attributed solely to the multimeter's
-resolution floor at one point (the iron). #15 shows the correction needed is
-load-dependent across the CT's low-current range, so a single factor tuned
-against any one load — including the sandwich maker point used here — will
-under-correct the smaller loads that are also test loads in this work (fan,
-laptop charger). See #15 for the full four-point picture and its own
-uncertainty analysis.
+The dominant term is the multimeter's specified range. Only the sandwich
+maker point (37.1 mV) was taken inside the Fluke 117's specified AC range;
+the other three fall below its 6.0 mV floor and cannot support a calibration
+figure. On that single valid point the two instruments agree to 1.5%, within
+the meter's own ±1.8% at that reading.
+
+Two uncertainties remain open and are larger than anything above:
+
+- **Turns ratio.** The sensor's datasheet is internally inconsistent, giving
+  a turns ratio of 1:1800 alongside nominal values of 100 A : 50 mA, which
+  imply 2000:1. The firmware uses 2000. If the effective ratio is 1800, every
+  reported current carries an 11% systematic error. This is not visible in
+  any burden-voltage comparison, because the ratio is applied afterwards.
+- **Operating region.** All four loads draw between 0.19% and 3.18% of the
+  sensor's 100 A rating. IEC 61869-2 specifies accuracy down to 1% of rated
+  current and IEEE C57.13 down to 10%; no accuracy class covers most of this
+  range. The correct statement for the write-up is that no class applies
+  here, not that the sensor is out of class.
+
+## Note on the burden value
+
+The 22 Ω burden exceeds the 10 Ω maximum given in the sensor's datasheet.
+This is recorded for completeness, not as a limitation: at the currents used
+here the constraint does not bind.
+
+That maximum exists to keep the core out of saturation, and saturation
+depends on the voltage the secondary must develop, which scales with primary
+current. At the sensor's rated 100 A, a 22 Ω burden would demand 1.1 V from
+the secondary — the regime the limit is written for. At the largest load in
+this work (3.4 A) the secondary develops 37 mV, thirty times less. The
+operating point is far below where saturation becomes a consideration.
+
+22 Ω is also the value used by the OpenEnergyMonitor reference design, and
+the value at which that project's published characterisation of this sensor
+was performed; it found waveform distortion from saturation negligible for
+normal use.
+
+The documented cost of a higher burden is increased phase error, more
+pronounced at low current. That does not affect this work: the system
+computes apparent power, a magnitude, and never derives active power from a
+voltage and current pair, so phase error does not enter any reported
+quantity.

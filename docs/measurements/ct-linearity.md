@@ -50,43 +50,67 @@ with the multimeter reference at that point.
 | laptop charger | 65 W | 0.47 A | 0.47% | 5.75 mV | 4.618 mV | 45 | -19.7% | 1.2451 |
 | sandwich maker | 686 W | 3.18 A | 3.18% | 37.1 mV | 36.545 mV | 27 | -1.5% | 1.0152 |
 
+## Validity of each point
+
+Only one of the four points is usable as a reference. The Fluke 117 specifies
+AC accuracy from 1% to 100% of range, i.e. at or above **6.0 mV** on its
+600 mV mV-AC range. Applying its ±(1.0% + 3 counts) figure:
+
+| load | `V_burden` mm | ±accuracy | inside specified range? |
+|---|---|---|---|
+| fan | 2.85 mV | ±0.33 mV | no |
+| soldering iron | 3.45 mV | ±0.33 mV | no |
+| laptop charger | 5.75 mV | ±0.36 mV | no |
+| sandwich maker | 37.1 mV | ±0.67 mV | **yes** |
+
+The sandwich maker is the only measurement taken within the meter's specified
+range, and it is also the only point where the two instruments agree — to
+1.5%, inside the meter's own ±1.8% at that reading. The `k_required` values
+of the other three carry no weight.
+
 ## Reading
 
-The required correction is **not strictly monotonic** in the central
-estimates: `k_required` runs 1.3424 (fan) -> 1.1901 (iron) -> 1.2451
-(charger) -> 1.0152 (sandwich maker), and iron's value dips below charger's
-even though iron draws less current.
+The `k_required` column does **not** measure a property of the current
+transformer, and cannot. Three independent arguments:
 
-That dip does not survive the multimeter's own resolution floor. The Fluke
-117's mV AC accuracy is ±(1.0% + 3 counts) = ±(1.0% + 0.3 mV), which at these
-signal levels is large relative to the signal itself:
+**1. The comparison is structurally blind to CT error.** The multimeter and
+the firmware measure the *same physical node* — the voltage across the 22 Ω
+burden. Any ratio error of the transformer is already present in that voltage
+and therefore affects both instruments identically. It cannot, by
+construction, produce a disagreement *between* them. Whatever the CT does at
+low current, it cancels out of this comparison.
 
-| load | `V_burden` mm | ±accuracy | range | `k_required` range |
-|---|---|---|---|---|
-| fan | 2.85 mV | ±0.33 mV | 2.52-3.18 mV | 1.19-1.50 |
-| soldering iron | 3.45 mV | ±0.33 mV | 3.12-3.78 mV | 1.07-1.31 |
-| laptop charger | 5.75 mV | ±0.36 mV | 5.39-6.11 mV | 1.17-1.32 |
-| sandwich maker | 37.1 mV | ±0.67 mV | 36.43-37.77 mV | 1.00-1.03 |
+**2. The multimeter's readings are physically impossible.** Converting each
+reading into an apparent turns ratio, the multimeter implies 1467:1 at the
+fan — *below* the nominal ratio. In a passive current transformer the
+magnetising current can only divert secondary current, which can only make
+the apparent ratio *higher* than nominal, never lower. The firmware's
+readings imply 1969:1, which is consistent.
 
-The fan, iron and charger `k_required` ranges all overlap each other
-substantially -- the multimeter cannot resolve a reliable ordering among
-these three points at these signal levels. What it can resolve clearly is
-the break between that low-current cluster (all under 0.5% of the CT's 100 A
-rating, `k_required` roughly 1.19-1.34 at the central estimates) and the
-sandwich maker (3.18% of rating, `k_required` 1.02, with a range that does
-not overlap any of the other three).
+**3. The disagreement tracks the meter's specified range, not the current.**
+As tabulated above, the three points where the instruments disagree are
+exactly the three taken below the meter's 6.0 mV floor, and the one point
+inside its specified range is the one where they agree.
 
-That break is the answer to what #15 set out to check: the correction needed
-is clearly load-dependent, is much larger below ~0.5% of the CT's rated
-current than at 3.18% of rating, and the disagreement between the original
-iron and sandwich-maker calibration points in #10 is not explained by the
-multimeter's noise floor alone (voltage-and-calibration.md previously
-concluded that). It is consistent with the CT's magnetising current
-becoming non-negligible at these small fractions of its rating -- exactly
-the mechanism #15 set out to test. The finer question of whether the
-correction varies smoothly *within* the low-current cluster, or has some
-other shape below 0.5% of rating, is not resolvable with this multimeter and
-is out of scope here.
+The two instruments also do not measure the same quantity: the Fluke's mV AC
+range is DC-coupled, while the firmware removes the running mean before
+computing RMS; and their bandwidths differ (1 kHz specified for the meter
+against a 430 Hz Nyquist limit for the ADC at 860 SPS). Both differences
+would appear as a roughly constant additive offset rather than a
+proportional error — which is the signature actually observed: the gap is
+0.55-0.73 mV in three of the four points, *including* the largest load,
+instead of growing with current.
+
+**Conclusion: the discrepancy is a measurement artifact of probing millivolt
+signals beside an energised conductor, not a property of the transformer.**
+The four test loads remain usable.
+
+What this does *not* establish is the chain's absolute accuracy against the
+true primary current. That question stays open, and no standard helps: IEC
+61869-2 specifies down to 1% of rated current and IEEE C57.13 down to 10%,
+while these loads sit between 0.19% and 3.18% of the sensor's 100 A rating.
+The correct statement is that **no accuracy class covers this operating
+region**, not that the sensor is out of class.
 
 ## What this does not do
 
