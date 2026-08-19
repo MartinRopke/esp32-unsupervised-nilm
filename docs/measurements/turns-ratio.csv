@@ -1,0 +1,338 @@
+point,turns,load,sample_index,vrms_v,included_in_mean,note
+1turn_socket_loose,1,soldering_iron,1,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,2,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,3,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,4,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,5,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,6,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,7,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,8,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,9,0.000011,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,10,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,11,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,12,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,13,0.000011,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,14,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,15,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,16,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,17,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,18,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,19,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,20,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,21,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,22,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,23,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,24,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,25,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,26,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,27,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,28,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,29,0.000011,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,30,0.000011,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,31,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,32,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,33,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,34,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,35,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,36,0.000011,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,37,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,38,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,39,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,40,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,41,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,42,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,43,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,44,0.000010,False,iron's mains socket was not fully seated; discarded
+1turn_socket_loose,1,soldering_iron,45,0.000011,False,iron's mains socket was not fully seated; discarded
+10turn_initial,10,soldering_iron,1,0.028723,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,2,0.028757,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,3,0.028725,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,4,0.028706,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,5,0.028758,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,6,0.028804,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,7,0.028774,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,8,0.028747,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,9,0.028706,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,10,0.028711,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,11,0.028696,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,12,0.028713,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,13,0.028737,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,14,0.028738,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,15,0.028732,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,16,0.028677,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,17,0.028615,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,18,0.028599,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,19,0.028580,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,20,0.028520,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,21,0.028503,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,22,0.028769,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,23,0.028898,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,24,0.028932,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,25,0.028926,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,26,0.028914,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,27,0.028853,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,28,0.028776,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,29,0.028743,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,30,0.028796,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,31,0.028836,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,32,0.028902,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,33,0.028941,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,34,0.028942,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,35,0.028922,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,36,0.028928,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,37,0.028891,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,38,0.028855,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,39,0.028819,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,40,0.028820,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,41,0.028839,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,42,0.028868,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,43,0.028888,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,44,0.028877,True,first clean 10-turn plateau; used for turn-count verification
+10turn_initial,10,soldering_iron,45,0.028884,True,first clean 10-turn plateau; used for turn-count verification
+1turn_confirmed,1,soldering_iron,1,0.002882,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,2,0.002889,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,3,0.002879,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,4,0.002886,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,5,0.002889,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,6,0.002894,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,7,0.002895,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,8,0.002892,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,9,0.002881,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,10,0.002874,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,11,0.002876,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,12,0.002888,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,13,0.002896,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,14,0.002903,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,15,0.002889,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,16,0.002879,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,17,0.002870,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,18,0.002892,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,19,0.002898,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,20,0.002900,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,21,0.002881,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,22,0.002867,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,23,0.002895,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,24,0.002904,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,25,0.002870,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,26,0.002884,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,27,0.002903,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,28,0.002898,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,29,0.002885,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,30,0.002875,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,31,0.002880,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,32,0.002892,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,33,0.002896,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,34,0.002898,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,35,0.002891,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,36,0.002884,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,37,0.002877,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,38,0.002879,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,39,0.002901,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,40,0.002903,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,41,0.002892,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,42,0.002877,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,43,0.002879,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,44,0.002896,True,socket reseated; used for turn-count verification
+1turn_confirmed,1,soldering_iron,45,0.002901,True,socket reseated; used for turn-count verification
+10turn_disturbed_1,10,soldering_iron,1,0.029742,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,2,0.029160,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,3,0.028237,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,4,0.027325,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,5,0.026626,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,6,0.026431,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,7,0.026692,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,8,0.027260,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,9,0.028169,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,10,0.029017,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,11,0.029680,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,12,0.029987,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,13,0.030065,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,14,0.029982,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,15,0.029822,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,16,0.029561,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,17,0.029224,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,18,0.028805,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,19,0.028290,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,20,0.027733,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,21,0.027146,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,22,0.026705,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,23,0.026438,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,24,0.026520,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,25,0.026929,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,26,0.027651,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,27,0.028582,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,28,0.029353,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,29,0.029746,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,30,0.029988,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,31,0.030064,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,32,0.030060,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,33,0.030014,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,34,0.029934,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,35,0.029822,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,36,0.029705,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,37,0.029537,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,38,0.029280,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,39,0.029012,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,40,0.028581,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,41,0.028048,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,42,0.027541,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,43,0.027073,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,44,0.026650,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_1,10,soldering_iron,45,0.026438,False,"burden resistor was being probed/moved; oscillating, discarded"
+10turn_disturbed_2,10,soldering_iron,1,0.028162,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,2,0.026755,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,3,0.027061,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,4,0.028975,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,5,0.030109,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,6,0.029862,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,7,0.028653,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,8,0.027129,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,9,0.026563,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,10,0.027166,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,11,0.028676,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,12,0.029928,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,13,0.030136,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,14,0.029669,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,15,0.028544,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,16,0.027300,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,17,0.026586,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,18,0.027114,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,19,0.028675,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,20,0.029954,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,21,0.030073,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,22,0.029293,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,23,0.027770,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,24,0.026681,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,25,0.027037,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,26,0.028578,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,27,0.029965,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,28,0.030145,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,29,0.029585,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,30,0.028268,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,31,0.026965,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,32,0.026634,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,33,0.027533,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,34,0.029074,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,35,0.030047,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,36,0.030167,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,37,0.029823,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,38,0.028911,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,39,0.027733,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,40,0.026761,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,41,0.026671,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,42,0.027652,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,43,0.029097,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,44,0.030058,False,still oscillating despite resistor left untouched; discarded
+10turn_disturbed_2,10,soldering_iron,45,0.030179,False,still oscillating despite resistor left untouched; discarded
+10turn_confirmed,10,soldering_iron,1,0.028563,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,2,0.028604,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,3,0.028562,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,4,0.028545,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,5,0.028597,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,6,0.028557,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,7,0.028607,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,8,0.028565,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,9,0.028581,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,10,0.028615,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,11,0.028592,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,12,0.028582,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,13,0.028637,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,14,0.028657,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,15,0.028667,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,16,0.028705,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,17,0.028642,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,18,0.028651,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,19,0.028586,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,20,0.028563,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,21,0.028542,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,22,0.028494,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,23,0.028542,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,24,0.028662,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,25,0.028770,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,26,0.028761,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,27,0.028658,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,28,0.028645,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,29,0.028543,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,30,0.028483,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,31,0.028497,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,32,0.028493,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,33,0.028548,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,34,0.028640,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,35,0.028626,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,36,0.028626,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,37,0.028594,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,38,0.028662,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,39,0.028655,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,40,0.028654,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,41,0.028655,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,42,0.028634,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,43,0.028605,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,44,0.028591,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+10turn_confirmed,10,soldering_iron,45,0.028592,True,connection reseated; used for ADC-vs-multimeter cross-check (multimeter read 28.9/29.0 mV)
+sandwich_cycle_1,1,sandwich_maker,1,0.005568,False,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,2,0.005015,False,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,3,0.010744,False,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,4,0.031216,False,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,5,0.036592,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,6,0.036660,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,7,0.036436,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,8,0.036382,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,9,0.036666,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,10,0.036686,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,11,0.036310,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,12,0.036407,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,13,0.036615,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,14,0.036670,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,15,0.036405,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,16,0.036436,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,17,0.036640,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,18,0.036680,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,19,0.036327,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,20,0.036346,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,21,0.036737,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,22,0.036495,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,23,0.036192,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,24,0.036399,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,25,0.036549,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,26,0.036579,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,27,0.036229,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,28,0.036276,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,29,0.036530,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,30,0.036333,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,31,0.036149,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,32,0.036318,True,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,33,0.032735,False,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,34,0.014744,False,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_1,1,sandwich_maker,35,0.005611,False,on-cycle after first cutoff; ramp-in (1-4) and cutoff tail (33-35) trimmed; no mains V paired
+sandwich_cycle_2,1,sandwich_maker,1,0.007312,False,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,2,0.028228,False,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,3,0.036682,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,4,0.036373,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,5,0.036826,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,6,0.036565,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,7,0.036397,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,8,0.036826,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,9,0.036267,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,10,0.036340,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,11,0.036749,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,12,0.036350,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,13,0.036461,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,14,0.036596,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,15,0.036317,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,16,0.036053,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,17,0.036460,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,18,0.036370,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,19,0.036092,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,20,0.036509,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,21,0.036313,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,22,0.036091,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,23,0.036398,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,24,0.036516,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,25,0.036197,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,26,0.036288,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,27,0.036654,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,28,0.036354,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,29,0.036217,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,30,0.036496,True,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,31,0.023447,False,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
+sandwich_cycle_2,1,sandwich_maker,32,0.021934,False,on-cycle after second cutoff; ramp-in (1-2) and cutoff tail (31-32) trimmed; paired with mains V=236.75 V
