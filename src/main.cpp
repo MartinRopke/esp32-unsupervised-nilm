@@ -84,7 +84,15 @@ void loop() {
       Serial.print(">power:");
       Serial.println(result.apparentPower, 4);
 
-      eventDetector.addSample(result.apparentPower, now);
+      const DetectionResult detection = eventDetector.addSample(result.apparentPower, now);
+      if (detection.eventDetected) {
+        Serial.print(">t_s:");
+        Serial.println(detection.event.timestampMicros / 1e6f, 6);
+        Serial.print(">delta_va:");
+        Serial.println(detection.event.magnitudeVa, 4);
+        Serial.print(">direction:");
+        Serial.println(detection.event.direction == Direction::kOn ? "on" : "off");
+      }
     }
   }
 }
