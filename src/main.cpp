@@ -1,6 +1,7 @@
 #include <Adafruit_ADS1X15.h>
 #include <Wire.h>
 
+#include "event_detector.h"
 #include "meter.h"
 
 // ---------------------------------------------------------------------------
@@ -24,8 +25,18 @@ static constexpr MeterConfig kConfig = {
     /* tariff           */ 0.92f,    // [R$/kWh]
 };
 
+// Threshold and confirmation window from the event-detection literature:
+// 30 VA follows the reference-dataset labelling convention (Pereira 2019;
+// Rehman et al. 2020); 3 samples merges a switching transient into one
+// event (Lu and Li 2020).
+static constexpr EventDetectorConfig kEventDetectorConfig = {
+    /* thresholdVa               */ 30.0f,  // [VA]
+    /* confirmationWindowSamples */ 3,
+};
+
 Adafruit_ADS1115 ads;
 Meter meter(kConfig);
+EventDetector eventDetector(kEventDetectorConfig);
 
 uint32_t lastSampleMicros{0};
 
@@ -72,6 +83,8 @@ void loop() {
       Serial.println(result.iRms, 4);
       Serial.print(">power:");
       Serial.println(result.apparentPower, 4);
+
+      eventDetector.addSample(result.apparentPower, now);
     }
   }
 }
