@@ -46,6 +46,10 @@ static constexpr uint32_t sampleIntervalMicros = 1163;
 void setup() {
   Serial.begin(921600);
 
+  // t_s comes from micros(), a uint32_t that wraps every 71.6 minutes; a capture longer than
+  // that loses alignment between the wrapped rows. Keep captures under 45 minutes, with margin.
+  Serial.println("t_s,vrms,irms,power,event,event_t_s,delta_va,direction");
+
   if (!ads.begin()) {
     Serial.println("Failed to start the ADS1115!");
     while (1);
@@ -95,6 +99,33 @@ void loop() {
         Serial.print(">direction:");
         Serial.println(static_cast<int>(detection.event.direction));
       }
+
+      // One CSV row per closed window, alongside the Teleplot lines above. event_t_s is the
+      // detector's own instant for the transition (the confirmation window's first sample),
+      // which precedes this row's t_s by up to the confirmation window's latency: collapsing
+      // the two would lose which sample actually marked the transition.
+      Serial.print(now / 1e6f, 6);
+      Serial.print(',');
+      Serial.print(result.vRms, 6);
+      Serial.print(',');
+      Serial.print(result.iRms, 4);
+      Serial.print(',');
+      Serial.print(result.apparentPower, 4);
+      Serial.print(',');
+      Serial.print(detection.eventDetected ? 1 : 0);
+      Serial.print(',');
+      if (detection.eventDetected) {
+        Serial.print(detection.event.timestampMicros / 1e6f, 6);
+      }
+      Serial.print(',');
+      if (detection.eventDetected) {
+        Serial.print(detection.event.magnitudeVa, 4);
+      }
+      Serial.print(',');
+      if (detection.eventDetected) {
+        Serial.print(static_cast<int>(detection.event.direction));
+      }
+      Serial.println();
     }
   }
 }
