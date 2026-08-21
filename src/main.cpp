@@ -9,16 +9,15 @@
 // firmware is agnostic to where it runs. To use another installation, edit
 // only this block.
 // ---------------------------------------------------------------------------
-// mainsVoltage and calibrationFactor were measured on 19 Aug 2026. Their
-// uncertainty budget is in docs/measurements/turns-ratio.md and is dominated
-// by a term that is not bounded by any admissible measurement — do not quote
-// a single percentage for them without reading it.
+// mainsVoltage and calibrationFactor were measured on 19-20 Aug 2026, with a
+// combined uncertainty of ~1.7%, every term of which is now bounded by a
+// direct measurement.
 //
 // mainsVoltage is a fixed stand-in for a quantity the system does not
 // measure and that varies with load and time of day.
 static constexpr MeterConfig kConfig = {
     /* mainsVoltage     */ 236.75f,  // [V]      switch to 127.0f on a 127 V installation
-    /* calibrationFactor*/ 1.0135f,  //          measured; see turns-ratio.md
+    /* calibrationFactor*/ 1.0092f,  //          measured, ~1.7% uncertainty
     /* ctRatio          */ 2000.0f,  //          SCT-013-000 turns ratio
     /* burdenOhms       */ 22.0f,    // [ohm]    burden resistor
     /* rmsWindowSeconds */ 1.0f,     // [s]      RMS window = 60 mains cycles

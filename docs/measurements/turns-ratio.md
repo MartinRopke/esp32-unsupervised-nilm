@@ -88,6 +88,12 @@ smart-plug reading was taken for this issue:
 R = 220² / 686 = 70.5539 Ω
 ```
 
+**Superseded below.** `docs/measurements/reference-load-resistance.md`
+later measured this appliance's resistance directly — `R_hot = 70.8531 Ω`,
+a 0.42% difference from the nameplate figure above, well inside that
+measurement's own uncertainty. The ratio and factor below now use the
+measured `R_hot`, not the nameplate value.
+
 The sandwich maker is thermostatic, so per the bench-measurement protocol
 each point required waiting for a full cutoff from a cold connection and
 then capturing through the following on-cycle. Two consecutive on-cycles
@@ -106,29 +112,34 @@ cycle, and per the bench protocol that shortfall is reported rather than
 padded across cycles.
 
 `sandwich_cycle_2` is the one used for the ratio, since it is the point with
-a mains voltage reading taken during the same plateau:
+a mains voltage reading taken during the same plateau. Updated to use the
+measured `R_hot = 70.8531 Ω` (`docs/measurements/reference-load-resistance.md`)
+in place of the nameplate value:
 
 ```
-I_primary  = V_mains / R           = 236.75 / 70.5539   = 3.35559 A
+I_primary  = V_mains / R_hot       = 236.75 / 70.8531   = 3.34142 A
 I_secondary = V_burden / 22 Ω      = 0.036420 / 22       = 0.0016555 A
-ratio_effective = I_primary / I_secondary                = 2027.0
+ratio_effective = I_primary / I_secondary                = 2018.4
 ```
+
+(For reference, the nameplate-only figure was `ratio_effective ≈ 2027.0` —
+the two agree to 0.42%, the same gap between the measured and nameplate
+resistances.)
 
 ## Conclusion
 
-**`ratio_effective ≈ 2027`**, from the single Method A point at 3.36 A.
+**`ratio_effective ≈ 2018`**, from the single Method A point at 3.34 A.
 
-- 1.3% from the currently configured `ctRatio = 2000`.
-- 12.6% from the datasheet's alternative figure of 1800.
+- 0.9% from the currently configured `ctRatio = 2000`.
+- 12.1% from the datasheet's alternative figure of 1800.
 
 The measured ratio sits decisively closer to 2000: the gap to 1800 is an
-order of magnitude larger than any source of uncertainty identified here
-(mains-reading spread ~0.02%, nameplate-resistance trust ~0.2%, cycle-to-
-cycle `vrms` repeatability ~0.13%, plus the multimeter's own AC-accuracy
-spec on the ranges used). **2000 is the value supported by this
-measurement; 1800 is not.**
+order of magnitude larger than the total uncertainty on this figure (~1.7%,
+see below — mains-voltage spec, the now-measured resistance, and firmware
+repeatability). **2000 is the value supported by this measurement; 1800 is
+not.**
 
-This rests on one current point (3.36 A) rather than the two-method,
+This rests on one current point (3.34 A) rather than the two-method,
 multi-current cross-check the issue originally called for — see below.
 
 ## Uncertainty budget
@@ -143,53 +154,46 @@ and in the firmware computation that later applies it. Whatever their true
 values, they divide out. This is why the result is tighter than a naive sum
 of component tolerances would suggest.
 
-**Terms that do contribute:**
+**`R` is now bounded**, per `docs/measurements/reference-load-resistance.md`:
+measured directly (`R_hot = 70.8531 Ω`, a 0.42% agreement with the
+nameplate), not assumed from the nameplate alone.
 
 | term | contribution | basis |
 |---|---|---|
 | `V_mains` | 1.13% | Fluke 117, ±(1.0% + 3 digits) at 236.75 V |
 | `V_burden` (firmware) | 0.13% | cycle-to-cycle repeatability, two on-cycles |
-| `R` of the sandwich maker | **not bounded** | nameplate only |
+| `R` of the sandwich maker | 1.23% | measured directly; see breakdown below |
 
-Combining the two bounded terms gives 1.14%. That figure is **not** the
-uncertainty of the calibration, because the third term is missing rather
-than small.
+Combined in quadrature: **~1.7%**. This is the total uncertainty on
+`ratio_effective` and on `calibrationFactor` derived from it — no longer
+bounded only below, as it was before this term was closed.
 
-**On the unbounded term.** `R = 220² / 686 = 70.5539 Ω` is derived entirely
-from the appliance's nameplate. Nameplate power ratings for heating
-appliances carry a manufacturing tolerance that is not established anywhere
-in this work. Earlier drafts cited agreement with two smart-plug readings
-(70.51 Ω, 70.68 Ω) as evidence that the nameplate is accurate to 0.2%. **That
-justification has been withdrawn**: the smart plug is the ground truth
-reserved for validating the system, and using it to underwrite the
-calibration would make the validation partly self-referential — the same
-contamination the project avoids elsewhere, in a subtler form.
+**Where the `R` term's 1.23% comes from** (full derivation in
+`docs/measurements/reference-load-resistance.md`): the multimeter's own Ω
+accuracy spec on the cold reading (1.18%, ±(0.9% + 2 digits) at 70.7 Ω),
+combined with the cold/hot `vrms` ratio's sampling uncertainty (0.32%,
+standard error of the mean — see that document's caveat on why this is
+likely optimistic) and a small mains-drift correction term (0.10%).
 
-Consequently the calibration's uncertainty is bounded below by 1.14% and
-above by the nameplate's tolerance, which is unknown here. Quote it as
-"limited by the appliance nameplate", not as a number.
+This total (~1.7%) is higher than a since-superseded estimate in this
+document that guessed "roughly 1.2%" before the measurement was taken — the
+Ω-range spec turned out to be nearly as large a contributor as the
+V-range spec, and the two add in quadrature rather than one dominating.
+Still a hard bound, which was the point of closing this term.
 
-**A caveat on the caveat:** the Fluke 117 accuracy figure above is the
-commonly published specification, not confirmed against this unit's own
-manual.
+**Historical note, since withdrawn.** An earlier draft of this section cited
+agreement with two smart-plug readings (70.51 Ω, 70.68 Ω) as evidence that
+the nameplate was accurate to 0.2%. That justification was withdrawn before
+any smart-plug-based number was used in a real calibration: the smart plug
+is the ground truth reserved for validating the system, and using it to
+underwrite the calibration would make the validation partly
+self-referential. The direct multimeter + firmware-ratio measurement in
+`reference-load-resistance.md` replaces that withdrawn justification with a
+traceable one.
 
-## How to close the unbounded term
-
-Measure `R` directly, without the smart plug:
-
-1. With the sandwich maker unplugged and cold, measure its element resistance
-   on the multimeter's Ω range. This gives `R_cold` from a traceable
-   instrument.
-2. Capture the firmware's `vrms` from cold switch-on through to thermal
-   steady state. Since `I ∝ 1/R` at constant mains voltage,
-   `R_hot = R_cold × (vrms_cold / vrms_hot)`.
-
-The second step is a *ratio* of the firmware against itself, so it needs no
-absolute calibration and introduces no external instrument. Together they
-bound `R` and would bring the total uncertainty back to roughly 1.2%.
-
-Worth doing before the validation stage, since this uncertainty sets the
-floor on any accuracy figure the work can claim.
+**A caveat on the caveat:** the Fluke 117 accuracy figures above (both Ω and
+V) are the commonly published specifications, not confirmed against this
+unit's own manual.
 
 ## What this does not do
 
@@ -201,7 +205,7 @@ floor on any accuracy figure the work can claim.
   independently, so the multi-turn setup did not produce its own
   `ratio_effective` — only the turn-count verification, the low-current
   comparison, and the ADC cross-check.
-- **Tests only one current (3.36 A).** The issue suggested checking more
+- **Tests only one current (3.34 A).** The issue suggested checking more
   than one point if time allowed; that did not happen this session. A
   second Method A point, or the skipped Method B current-in-series
   measurement, would strengthen this beyond a single data point.
