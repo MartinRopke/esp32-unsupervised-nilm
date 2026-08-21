@@ -90,11 +90,10 @@ void loop() {
         Serial.println(detection.event.timestampMicros / 1e6f, 6);
         Serial.print(">delta_va:");
         Serial.println(detection.event.magnitudeVa, 4);
+
+        // Cast to int so Teleplot can plot the event, since it can't plot graph with text token.
         Serial.print(">direction:");
-        Serial.println(detection.event.direction == Direction::kOn ? "on" : "off");
-        // Signed +1/-1 so Teleplot can plot the event, since it can't graph the text token above.
-        Serial.print(">event:");
-        Serial.println(detection.event.direction == Direction::kOn ? 1 : -1);
+        Serial.println(static_cast<int>(detection.event.direction));
       }
     }
   }

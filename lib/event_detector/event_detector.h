@@ -16,7 +16,7 @@ struct EventDetectorConfig {
   uint32_t confirmationWindowSamples;  // CONFIRMATION_WINDOW_SAMPLES  e.g. 3
 };
 
-enum class Direction { kOn, kOff };
+enum class Direction { kOn = 1, kOff = -1 };
 
 struct Event {
   uint32_t timestampMicros;
