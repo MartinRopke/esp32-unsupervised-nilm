@@ -92,6 +92,9 @@ void loop() {
         Serial.println(detection.event.magnitudeVa, 4);
         Serial.print(">direction:");
         Serial.println(detection.event.direction == Direction::kOn ? "on" : "off");
+        // Signed +1/-1 so Teleplot can plot the event, since it can't graph the text token above.
+        Serial.print(">event:");
+        Serial.println(detection.event.direction == Direction::kOn ? 1 : -1);
       }
     }
   }
