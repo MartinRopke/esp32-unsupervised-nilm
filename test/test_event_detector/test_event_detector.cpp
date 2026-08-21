@@ -127,6 +127,87 @@ void test_magnitude_uses_window_means_not_adjacent_samples(void) {
   TEST_ASSERT_FLOAT_WITHIN(2.0f, 50.0f, result.event.magnitudeVa);
 }
 
+// A stable plateau, sustained well past the confirmation window, never
+// crosses the threshold relative to its own baseline, so it produces no
+// events over a long synthetic run.
+void test_stable_plateau_produces_no_repeated_events_over_long_run(void) {
+  EventDetector detector(makeConfig());
+  const float plateauVa = 100.0f;
+
+  uint32_t timestamp = 0;
+  bool anyEventDetected = false;
+  for (int i = 0; i < 200; ++i) {
+    DetectionResult result = detector.addSample(plateauVa, timestamp);
+    timestamp += kSampleIntervalMicros;
+    anyEventDetected |= result.eventDetected;
+  }
+
+  TEST_ASSERT_FALSE(anyEventDetected);
+}
+
+// Two distinct threshold crossings that both land inside the same
+// confirmation window are absorbed into one event, not two: the second
+// crossing arrives while the detector is already confirming the first, so
+// updateConfirming accumulates it into the candidate window instead of
+// re-evaluating it against the (stale) baseline.
+void test_two_steps_inside_confirmation_window_produce_single_event(void) {
+  EventDetector detector(makeConfig());
+  const float baselineVa = 100.0f;
+
+  uint32_t timestamp = 0;
+  FeedRun baseline = feedPlateau(detector, baselineVa, 3, timestamp);
+  timestamp = baseline.timestamp;
+
+  // Sample 1 crosses the threshold and opens the confirmation window.
+  int eventCount = 0;
+  DetectionResult result = detector.addSample(baselineVa + 50.0f, timestamp);
+  timestamp += kSampleIntervalMicros;
+  if (result.eventDetected) ++eventCount;
+
+  // Sample 2, while still confirming, is a second, larger jump -- a step of
+  // its own if compared against the baseline directly. It must not produce
+  // a second event.
+  result = detector.addSample(baselineVa + 200.0f, timestamp);
+  timestamp += kSampleIntervalMicros;
+  if (result.eventDetected) ++eventCount;
+
+  // Sample 3 fills the candidate window and resolves the single merged
+  // event.
+  result = detector.addSample(baselineVa + 200.0f, timestamp);
+  if (result.eventDetected) ++eventCount;
+
+  TEST_ASSERT_EQUAL_INT(1, eventCount);
+  TEST_ASSERT_TRUE(result.eventDetected);
+}
+
+// A multi-second ramp -- power climbing sample by sample past the threshold,
+// as a switching transient settles -- resolves to exactly one event once the
+// confirmation window fills, rather than one event per sample that happens
+// to clear the threshold against the (stale) baseline.
+void test_multi_second_ramp_does_not_fragment_into_several_events(void) {
+  EventDetector detector(makeConfig());
+  const float baselineVa = 100.0f;
+  const float ramp[] = {118.0f, 136.0f, 154.0f, 172.0f, 190.0f};
+
+  uint32_t timestamp = 0;
+  FeedRun baseline = feedPlateau(detector, baselineVa, 3, timestamp);
+  timestamp = baseline.timestamp;
+
+  int eventCount = 0;
+  DetectionResult result{};
+  for (float sample : ramp) {
+    result = detector.addSample(sample, timestamp);
+    timestamp += kSampleIntervalMicros;
+    if (result.eventDetected) ++eventCount;
+  }
+
+  TEST_ASSERT_EQUAL_INT(1, eventCount);
+
+  // The ramp's final plateau is itself stable: no further events follow.
+  FeedRun settled = feedPlateau(detector, 190.0f, 5, timestamp);
+  TEST_ASSERT_FALSE(settled.lastResult.eventDetected);
+}
+
 void setUp(void) {}
 void tearDown(void) {}
 
@@ -136,5 +217,8 @@ int main(int, char**) {
   RUN_TEST(test_noise_below_threshold_produces_no_event);
   RUN_TEST(test_switch_off_detected_with_opposite_direction);
   RUN_TEST(test_magnitude_uses_window_means_not_adjacent_samples);
+  RUN_TEST(test_stable_plateau_produces_no_repeated_events_over_long_run);
+  RUN_TEST(test_two_steps_inside_confirmation_window_produce_single_event);
+  RUN_TEST(test_multi_second_ramp_does_not_fragment_into_several_events);
   return UNITY_END();
 }
