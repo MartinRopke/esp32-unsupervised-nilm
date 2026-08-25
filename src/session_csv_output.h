@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include "event_detector.h"
+#include "event_merger.h"
 #include "meter.h"
 
 // Prints the bench-session CSV row to Serial. Depends on Arduino's Serial, so
@@ -13,4 +13,4 @@
 // that the closed-window fields are only meaningful once a window has
 // closed, same as printTeleplotWindow.
 void printSessionCsvRow(uint32_t timestampMicros, const SampleResult& result,
-                        const DetectionResult& detection);
+                        const MergeResult& merge, int32_t clusterId);

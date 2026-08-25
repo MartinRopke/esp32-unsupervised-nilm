@@ -1,7 +1,9 @@
 #include <Adafruit_ADS1X15.h>
 #include <Wire.h>
 
+#include "event_clusterer.h"
 #include "event_detector.h"
+#include "event_merger.h"
 #include "meter.h"
 #include "session_csv_output.h"
 #include "teleplot_output.h"
@@ -36,6 +38,32 @@ static constexpr EventDetectorConfig kEventDetectorConfig = {
     /* confirmationWindowSamples */ 3,
 };
 
+// A transition spanning several sampling intervals reaches the detector as
+// 2-4 fragments of one appliance switching, close in time and far apart in
+// magnitude; merging them prevents one appliance from being seen as
+// several. 5.0 s: one confirmation window (3 s) plus one sample is the
+// minimum possible gap between fragments, so 5 s adds one sample of slack.
+static constexpr EventMergerConfig kEventMergerConfig = {
+    /* mergeWindowSeconds */ 5.0f,  // [s]
+};
+
+// epsilonVa: 2 sigma of the pooled within-appliance dispersion measured
+// across three appliances (6.2 VA), the smaller of the two candidates a
+// sigma-multiple derivation considers, matching the empirical plateau that
+// separates the same three appliances into distinct clusters. minPoints:
+// 2 x dimensionality (Schubert et al. 2017) raised for declared noise, and
+// independently equal to two complete on/off cycles, since an appliance
+// seen only once is not distinguishable from an artefact. maxEvents: bounds
+// history_ to maxEvents * sizeof(float) = 128 * 4 B = 512 B resident, plus
+// O(maxEvents) transient working buffers per call, freed immediately after,
+// negligible against the ESP32's RAM and generous against the ~40 events a
+// half-hour bench session produces.
+static constexpr EventClustererConfig kEventClustererConfig = {
+    /* epsilonVa  */ 12.0f,  // [VA]
+    /* minPoints  */ 4,
+    /* maxEvents  */ 128,
+};
+
 // ---------------------------------------------------------------------------
 // Session output configuration.
 // Independent of the installation block above -- toggles which serial
@@ -51,6 +79,8 @@ static constexpr bool kEnableCsvOutput = true;
 Adafruit_ADS1115 ads;
 Meter meter(kConfig);
 EventDetector eventDetector(kEventDetectorConfig);
+EventMerger eventMerger(kEventMergerConfig);
+EventClusterer eventClusterer(kEventClustererConfig);
 
 uint32_t lastSampleMicros{0};
 
@@ -62,7 +92,7 @@ void setup() {
 
   // t_s comes from micros(), a uint32_t that wraps every 71.6 minutes; a capture longer than
   // that loses alignment between the wrapped rows. Keep captures under 45 minutes, with margin.
-  Serial.println("t_s,vrms,irms,power,event,event_t_s,delta_va,direction");
+  Serial.println("t_s,vrms,irms,power,event,event_t_s,delta_va,direction,cluster,fragments");
 
   if (!ads.begin()) {
     Serial.println("Failed to start the ADS1115!");
@@ -96,6 +126,20 @@ void loop() {
       detection = eventDetector.addSample(result.apparentPower, now);
     }
 
+    // The merger is fed every closed window: a detected event when there is one, otherwise a
+    // tick, so a held fragment isn't stuck waiting for one that never arrives.
+    MergeResult merge{};
+    if (result.windowClosed) {
+      merge =
+          detection.eventDetected ? eventMerger.addEvent(detection.event) : eventMerger.tick(now);
+    }
+
+    // The clusterer only sees a released (possibly merged) event, never a raw fragment.
+    int32_t clusterId = -1;
+    if (merge.eventReady) {
+      clusterId = eventClusterer.addEvent(merge.event.magnitudeVa);
+    }
+
     if (kEnableTeleplotOutput) {
       printTeleplotSample(meter.dcOffset(), result.acVolts);
       printTeleplotWindow(result);
@@ -103,7 +147,7 @@ void loop() {
     }
 
     if (kEnableCsvOutput) {
-      printSessionCsvRow(now, result, detection);
+      printSessionCsvRow(now, result, merge, clusterId);
     }
   }
 }
