@@ -73,7 +73,7 @@ static constexpr EventClustererConfig kEventClustererConfig = {
 // Toggle either output off to keep a bench-session serial log free of the
 // other's lines (e.g. CSV-only while capturing docs/measurements/ data).
 // Compile-time, so flipping one means reflashing.
-static constexpr bool kEnableTeleplotOutput = true;
+static constexpr bool kEnableTeleplotOutput = false;
 static constexpr bool kEnableCsvOutput = true;
 
 Adafruit_ADS1115 ads;
