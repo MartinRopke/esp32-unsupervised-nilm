@@ -3,6 +3,8 @@
 
 #include "event_detector.h"
 #include "meter.h"
+#include "session_csv_output.h"
+#include "teleplot_output.h"
 
 // ---------------------------------------------------------------------------
 // Installation configuration block.
@@ -33,6 +35,18 @@ static constexpr EventDetectorConfig kEventDetectorConfig = {
     /* thresholdVa               */ 30.0f,  // [VA]
     /* confirmationWindowSamples */ 3,
 };
+
+// ---------------------------------------------------------------------------
+// Session output configuration.
+// Independent of the installation block above -- toggles which serial
+// outputs this build emits, for bench-session control rather than physical
+// calibration.
+// ---------------------------------------------------------------------------
+// Toggle either output off to keep a bench-session serial log free of the
+// other's lines (e.g. CSV-only while capturing docs/measurements/ data).
+// Compile-time, so flipping one means reflashing.
+static constexpr bool kEnableTeleplotOutput = true;
+static constexpr bool kEnableCsvOutput = true;
 
 Adafruit_ADS1115 ads;
 Meter meter(kConfig);
@@ -75,57 +89,21 @@ void loop() {
     // Hand the raw burden sample to the measurement module; it owns the logic.
     SampleResult result = meter.addSample(burdenVolts, now);
 
-    Serial.print(">dc:");
-    Serial.println(meter.dcOffset(), 4);
-    Serial.print(">ac:");
-    Serial.println(result.acVolts, 4);
-
+    // The detector only ever sees one apparent-power sample per closed window, so it can't
+    // run before the window closes; detection stays default (no event) otherwise.
+    DetectionResult detection{};
     if (result.windowClosed) {
-      Serial.print(">vrms:");
-      Serial.println(result.vRms, 6);
-      Serial.print(">irms:");
-      Serial.println(result.iRms, 4);
-      Serial.print(">power:");
-      Serial.println(result.apparentPower, 4);
+      detection = eventDetector.addSample(result.apparentPower, now);
+    }
 
-      const DetectionResult detection = eventDetector.addSample(result.apparentPower, now);
-      if (detection.eventDetected) {
-        Serial.print(">t_s:");
-        Serial.println(detection.event.timestampMicros / 1e6f, 6);
-        Serial.print(">delta_va:");
-        Serial.println(detection.event.magnitudeVa, 4);
+    if (kEnableTeleplotOutput) {
+      printTeleplotSample(meter.dcOffset(), result.acVolts);
+      printTeleplotWindow(result);
+      printTeleplotEvent(detection);
+    }
 
-        // Cast to int so Teleplot can plot the event, since it can't plot graph with text token.
-        Serial.print(">direction:");
-        Serial.println(static_cast<int>(detection.event.direction));
-      }
-
-      // One CSV row per closed window, alongside the Teleplot lines above. event_t_s is the
-      // detector's own instant for the transition (the confirmation window's first sample),
-      // which precedes this row's t_s by up to the confirmation window's latency: collapsing
-      // the two would lose which sample actually marked the transition.
-      Serial.print(now / 1e6f, 6);
-      Serial.print(',');
-      Serial.print(result.vRms, 6);
-      Serial.print(',');
-      Serial.print(result.iRms, 4);
-      Serial.print(',');
-      Serial.print(result.apparentPower, 4);
-      Serial.print(',');
-      Serial.print(detection.eventDetected ? 1 : 0);
-      Serial.print(',');
-      if (detection.eventDetected) {
-        Serial.print(detection.event.timestampMicros / 1e6f, 6);
-      }
-      Serial.print(',');
-      if (detection.eventDetected) {
-        Serial.print(detection.event.magnitudeVa, 4);
-      }
-      Serial.print(',');
-      if (detection.eventDetected) {
-        Serial.print(static_cast<int>(detection.event.direction));
-      }
-      Serial.println();
+    if (kEnableCsvOutput) {
+      printSessionCsvRow(now, result, detection);
     }
   }
 }
