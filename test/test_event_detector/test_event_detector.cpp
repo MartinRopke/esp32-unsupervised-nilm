@@ -50,7 +50,7 @@ void test_step_above_threshold_produces_one_event_with_close_magnitude(void) {
   // should report an event.
   int eventCount = 0;
   DetectionResult result{};
-  for (int i = 0; i < 3; ++i) {
+  for (int i = 0; i < 4; ++i) {
     result = detector.addSample(baselineVa + step, timestamp);
     timestamp += kSampleIntervalMicros;
     if (result.eventDetected) ++eventCount;
@@ -91,7 +91,7 @@ void test_switch_off_detected_with_opposite_direction(void) {
   timestamp = baseline.timestamp;
 
   DetectionResult result{};
-  for (int i = 0; i < 3; ++i) {
+  for (int i = 0; i < 4; ++i) {
     result = detector.addSample(highVa - step, timestamp);
     timestamp += kSampleIntervalMicros;
   }
@@ -103,15 +103,16 @@ void test_switch_off_detected_with_opposite_direction(void) {
 }
 
 // The magnitude is the difference between the two windows' means, not
-// between adjacent samples. The candidate window's samples (140, 160, 150)
-// average to 150; an adjacent-sample calculation would instead compare the
-// last baseline sample (100) to the first candidate sample (140), giving 40
-// -- a result loose enough that a tight tolerance around the true step of 50
-// distinguishes the two.
+// between adjacent samples. The crossing sample (140) opens the confirmation
+// window but is excluded from it; the candidate window's samples (140, 160,
+// 150) average to 150; an adjacent-sample calculation would instead compare
+// the last baseline sample (100) to the first candidate sample (140), giving
+// 40 -- a result loose enough that a tight tolerance around the true step of
+// 50 distinguishes the two.
 void test_magnitude_uses_window_means_not_adjacent_samples(void) {
   EventDetector detector(makeConfig());
   const float baselineVa = 100.0f;
-  const float candidateSamples[] = {140.0f, 160.0f, 150.0f};
+  const float candidateSamples[] = {140.0f, 140.0f, 160.0f, 150.0f};
 
   uint32_t timestamp = 0;
   FeedRun baseline = feedPlateau(detector, baselineVa, 3, timestamp);
@@ -171,7 +172,14 @@ void test_two_steps_inside_confirmation_window_produce_single_event(void) {
   timestamp += kSampleIntervalMicros;
   if (result.eventDetected) ++eventCount;
 
-  // Sample 3 fills the candidate window and resolves the single merged
+  // Sample 3, while still confirming, does not yet fill the candidate
+  // window: the crossing sample (1) is excluded from it, so the window only
+  // has samples 2 and 3 so far.
+  result = detector.addSample(baselineVa + 200.0f, timestamp);
+  timestamp += kSampleIntervalMicros;
+  if (result.eventDetected) ++eventCount;
+
+  // Sample 4 fills the candidate window and resolves the single merged
   // event.
   result = detector.addSample(baselineVa + 200.0f, timestamp);
   if (result.eventDetected) ++eventCount;
@@ -187,7 +195,7 @@ void test_two_steps_inside_confirmation_window_produce_single_event(void) {
 void test_multi_second_ramp_does_not_fragment_into_several_events(void) {
   EventDetector detector(makeConfig());
   const float baselineVa = 100.0f;
-  const float ramp[] = {118.0f, 136.0f, 154.0f, 172.0f, 190.0f};
+  const float ramp[] = {118.0f, 136.0f, 154.0f, 172.0f, 190.0f, 190.0f};
 
   uint32_t timestamp = 0;
   FeedRun baseline = feedPlateau(detector, baselineVa, 3, timestamp);
@@ -208,6 +216,112 @@ void test_multi_second_ramp_does_not_fragment_into_several_events(void) {
   TEST_ASSERT_FALSE(settled.lastResult.eventDetected);
 }
 
+// The sample that straddles the switching instant is partial -- part old
+// state, part new -- and including it in the candidate window pulls the
+// resolved magnitude short of the true step. The next window, sitting on the
+// real plateau, then differs from that short baseline by enough to clear the
+// threshold again, fragmenting one action into two events. Values are the
+// measured series from ISSUE-exclude-transition-sample.md: the sandwich
+// maker switching on in event-detection-session-1.csv, t=502..511.
+void test_partial_transition_sample_excluded_from_candidate_window(void) {
+  EventDetector detector(makeConfig());
+
+  uint32_t timestamp = 0;
+  const float baselineSamples[] = {0.20f, 0.21f, 0.21f};
+  for (float sample : baselineSamples) {
+    detector.addSample(sample, timestamp);
+    timestamp += kSampleIntervalMicros;
+  }
+
+  const uint32_t crossingTimestamp = timestamp;
+  const float transitionSamples[] = {699.41f, 793.41f, 793.61f, 793.11f, 792.99f, 793.26f};
+  int eventCount = 0;
+  DetectionResult lastEvent{};
+  for (float sample : transitionSamples) {
+    DetectionResult result = detector.addSample(sample, timestamp);
+    timestamp += kSampleIntervalMicros;
+    if (result.eventDetected) {
+      ++eventCount;
+      lastEvent = result;
+    }
+  }
+
+  TEST_ASSERT_EQUAL_INT(1, eventCount);
+  TEST_ASSERT_TRUE(lastEvent.eventDetected);
+  TEST_ASSERT_FLOAT_WITHIN(2.0f, 793.0f, lastEvent.event.magnitudeVa);
+  TEST_ASSERT_EQUAL_INT(static_cast<int>(Direction::kOn),
+                        static_cast<int>(lastEvent.event.direction));
+  TEST_ASSERT_EQUAL_UINT32(crossingTimestamp, lastEvent.event.timestampMicros);
+}
+
+// Mirror of the case above for switching off, taken from the same file: the
+// same sandwich maker switching off a few seconds later,
+// event-detection-session-1.csv, t=518..527.
+void test_partial_transition_sample_excluded_from_candidate_window_switch_off(void) {
+  EventDetector detector(makeConfig());
+
+  uint32_t timestamp = 0;
+  const float baselineSamples[] = {793.9458f, 789.8550f, 791.2831f};
+  for (float sample : baselineSamples) {
+    detector.addSample(sample, timestamp);
+    timestamp += kSampleIntervalMicros;
+  }
+
+  const uint32_t crossingTimestamp = timestamp;
+  const float transitionSamples[] = {748.5990f, 0.8808f, 0.2265f, 0.1976f, 0.1862f, 0.2027f};
+  int eventCount = 0;
+  DetectionResult lastEvent{};
+  for (float sample : transitionSamples) {
+    DetectionResult result = detector.addSample(sample, timestamp);
+    timestamp += kSampleIntervalMicros;
+    if (result.eventDetected) {
+      ++eventCount;
+      lastEvent = result;
+    }
+  }
+
+  TEST_ASSERT_EQUAL_INT(1, eventCount);
+  TEST_ASSERT_TRUE(lastEvent.eventDetected);
+  TEST_ASSERT_FLOAT_WITHIN(2.0f, 791.3f, lastEvent.event.magnitudeVa);
+  TEST_ASSERT_EQUAL_INT(static_cast<int>(Direction::kOff),
+                        static_cast<int>(lastEvent.event.direction));
+  TEST_ASSERT_EQUAL_UINT32(crossingTimestamp, lastEvent.event.timestampMicros);
+}
+
+// A step around the fan's size (~45 VA, well under the S/3 > threshold fragmentation
+// bound worked out in the issue) must resolve to exactly one event whether
+// or not the crossing sample is in the candidate window, so the fix is not
+// achieved by making the detector less sensitive. Taken from the same file:
+// the fan switching on, event-detection-session-1.csv, t=1648..1657.
+void test_fan_sized_step_stays_single_event_regardless_of_transition_sample_handling(void) {
+  EventDetector detector(makeConfig());
+
+  uint32_t timestamp = 0;
+  const float baselineSamples[] = {0.2005f, 0.2002f, 0.2055f};
+  for (float sample : baselineSamples) {
+    detector.addSample(sample, timestamp);
+    timestamp += kSampleIntervalMicros;
+  }
+
+  const float transitionSamples[] = {55.1644f, 57.4154f, 46.7353f, 45.5001f, 45.4983f, 45.5046f};
+  int eventCount = 0;
+  DetectionResult lastEvent{};
+  for (float sample : transitionSamples) {
+    DetectionResult result = detector.addSample(sample, timestamp);
+    timestamp += kSampleIntervalMicros;
+    if (result.eventDetected) {
+      ++eventCount;
+      lastEvent = result;
+    }
+  }
+
+  TEST_ASSERT_EQUAL_INT(1, eventCount);
+  TEST_ASSERT_TRUE(lastEvent.eventDetected);
+  TEST_ASSERT_FLOAT_WITHIN(5.0f, 50.0f, lastEvent.event.magnitudeVa);
+  TEST_ASSERT_EQUAL_INT(static_cast<int>(Direction::kOn),
+                        static_cast<int>(lastEvent.event.direction));
+}
+
 void setUp(void) {}
 void tearDown(void) {}
 
@@ -220,5 +334,8 @@ int main(int, char**) {
   RUN_TEST(test_stable_plateau_produces_no_repeated_events_over_long_run);
   RUN_TEST(test_two_steps_inside_confirmation_window_produce_single_event);
   RUN_TEST(test_multi_second_ramp_does_not_fragment_into_several_events);
+  RUN_TEST(test_partial_transition_sample_excluded_from_candidate_window);
+  RUN_TEST(test_partial_transition_sample_excluded_from_candidate_window_switch_off);
+  RUN_TEST(test_fan_sized_step_stays_single_event_regardless_of_transition_sample_handling);
   return UNITY_END();
 }

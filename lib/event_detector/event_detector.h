@@ -48,9 +48,12 @@ class EventDetector {
   // only reported if the resolved magnitude clears the threshold).
   DetectionResult updateConfirming(float apparentPowerVa);
 
-  // The waiting-to-confirming transition: seeds candidate_ from the sample
-  // that crossed the threshold and starts confirming it.
-  void beginConfirming(float apparentPowerVa, uint32_t timestampMicros);
+  // The transition from waiting to confirming: starts confirming, dating the
+  // pending event to the sample that crossed the threshold. That sample
+  // itself straddles the transition -- part old state, part new -- so it is
+  // not pushed into candidate_; the candidate window starts filling from the
+  // following sample.
+  void beginConfirming(uint32_t timestampMicros);
 
   // Fixed-capacity ring buffer over the last `capacity` apparent-power
   // samples, exposing their mean. Owns only the windowing/averaging policy,

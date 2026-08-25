@@ -164,3 +164,43 @@ so it is not in the ground truth.
   cleanly as 3 single clean events reaching ~915 VA combined; descent partly
   out of planned order (see item 4 above) but fully captured, returning
   cleanly to the rest baseline.
+
+## Reprocessing after the transition sample fix (25 Aug 2026)
+
+`ISSUE-exclude-transition-sample.md` traced the fragmentation pattern above
+(item 6) to a divergence from Pereira (2019): `EventDetector::beginConfirming`
+was pushing the sample that straddles the switching instant into the
+candidate window, pulling its resolved magnitude short of the true step and
+letting the following window fire a second, spurious event against that
+contaminated baseline. The fix stops pushing that sample; the candidate
+window now starts from the sample after the crossing, and the event's
+timestamp stays dated to the crossing sample. Threshold and window size were
+not touched.
+
+The recorded data from this session was reprocessed, not recaptured: the
+`power` column of the three intact captures (session-1, session-2, session-5;
+session-3/4 are the interrupted recovery capture and excluded, as they are
+from every other count above) was replayed offline through the fixed
+`lib/event_detector`, same config (30 VA threshold, 3-sample confirmation
+window), and the resulting events matched against
+`event-detection-ground-truth.csv`. Each ground truth action claims the
+events falling between its own timestamp and the earlier of the next action's
+timestamp or +10 s (the minimum gap the bench protocol itself leaves between
+actions, Passo 4); an action's magnitude is its first matched event's, since
+that is the one a downstream consumer would see before any second,
+fragmented event arrives.
+
+| | before | after |
+|---|---|---|
+| actions detected | 41/41 | 41/41 |
+| actions fragmented | 18 (44%) | 4 (10%) |
+| sandwich maker fragmented | 10/11 | 0/11 |
+| sandwich maker magnitude | 686.1 +/- 74.1 VA (10.8%) | 793.7 +/- 4.5 VA (0.6%) |
+
+The four actions still fragmented after the fix are all the charger's: the
+two isolated actions where the charger switched on, plus its two appearances
+in the simultaneous switching pairs (`sandwich_maker+charger` and
+`fan+charger`, both `on`). That is the charger's own soft start ramp,
+spread over several seconds (item 6, above), a real property of the load, not
+a detector defect — declared out of scope in `ISSUE-exclude-transition-sample.md`
+and left unmerged.

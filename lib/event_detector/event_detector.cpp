@@ -16,17 +16,16 @@ DetectionResult EventDetector::updateWaiting(float apparentPowerVa, uint32_t tim
   bool isCandidateTransition =
       baseline_.isFull() && std::fabs(apparentPowerVa - baseline_.mean()) > config_.thresholdVa;
   if (isCandidateTransition) {
-    beginConfirming(apparentPowerVa, timestampMicros);
+    beginConfirming(timestampMicros);
   } else {
     baseline_.push(apparentPowerVa);
   }
   return {false, {}};
 }
 
-void EventDetector::beginConfirming(float apparentPowerVa, uint32_t timestampMicros) {
+void EventDetector::beginConfirming(uint32_t timestampMicros) {
   isConfirmingTransition_ = true;
   candidate_.reset();
-  candidate_.push(apparentPowerVa);
   pendingTimestampMicros_ = timestampMicros;
 }
 
