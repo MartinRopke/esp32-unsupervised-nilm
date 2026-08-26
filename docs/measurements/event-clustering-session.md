@@ -152,6 +152,30 @@ before continuing; the decision was to keep `mergeWindowSeconds=5.0` frozen
 and document the finding rather than retune it mid-session. Not fixed in this
 session.
 
+*Added on review (26 Aug 2026).* Three quantifications the session write-up
+did not have, from replaying the recorded series:
+
+- **The miss is deterministic and it is by exactly one second.** Events are
+  released at `dated + 6 s` (77 of 84; the other 7 at +5), so the merger holds
+  for 2 s of real time rather than 5. A follow-up fragment is dated 4 s after
+  the first and therefore arrives at `dated + 7 s` — one second after the held
+  event was released. Every time.
+- **The right denominator is 6, not 84.** Across all four captures there are
+  exactly **6** consecutive same-direction pairs less than 5 s apart in dated
+  time, i.e. 6 genuine merge opportunities. All 6 failed. "0 of 84" overstates
+  the blast radius; the defect is real but it had 6 chances to show.
+- **The fragments do reconstruct the true step.** The charger's three pairs sum
+  to 101.3, 100.8 and 101.6 VA — mean 101.2 VA, **0.40 % dispersion over three
+  repetitions** — matching the charger's own off-transition band (88.8-101.6
+  VA). The merge rule is right; only the clock it is measured on is wrong.
+
+**The fix does not touch a parameter.** The window stays 5.0 s. What changes is
+which clock each of the two conditions reads: the *merge* condition compares
+the fragments' **dated** instants (the current code is already correct here),
+while the *release* condition must run on the wall clock measured from the last
+fragment's **arrival**, not from its dated instant. Stated that way the merger
+needs no knowledge of the detector's confirmation delay.
+
 **3. Background-capture safety-cap false alarm.** The capture script's own
 `MAX_SECONDS=3000` safety cap elapsed during session-2's 10-minute passive
 observation, and the resulting process exit initially looked like a hardware
@@ -198,11 +222,27 @@ possible time, avoiding an autonomous mid-staircase cycle like the one seen
 during session-2's passive observation. All three repetitions used this
 reordered sequence; none literally match the issue's stated order.
 
-**8. Fan/charger cluster overlap.** Fan's clean ~37-52 VA transitions and
-several of the charger's lower-magnitude fragments and on-transitions
-repeatedly land in the same DBSCAN cluster in both session-2 and session-4,
-because their magnitudes sit within `epsilonVa=12` of each other. Expected
-given the two appliances' actual power draw, not a defect.
+**8. Fan/charger cluster overlap — mostly downstream of item 2.** Fan's clean
+~37-52 VA transitions and several of the charger's lower-magnitude fragments
+and on-transitions repeatedly land in the same DBSCAN cluster in both
+session-2 and session-4, because their magnitudes sit within `epsilonVa=12` of
+each other.
+
+*Corrected on review (26 Aug 2026).* Calling this "expected, not a defect"
+concedes too much. Replaying session-2 with the merge applied on the correct
+clock (item 2) moves most of it: charger events inside the fan's cluster drop
+from **9 to 3**, the charger's own cluster grows from **6 to 9** events, and
+outliers fall from 5 to 2. **Roughly two thirds of this overlap is a symptom of
+the merger defect, not of the appliances' power draw.** What remains — 3 events
+— is the charger's soft-start ramp spreading over more than 5 s, which is the
+limitation already declared in stage 2 and belongs to the load, not to the
+detector or the clusterer.
+
+A separate finding that does belong here: **the charger is not a
+stable-signature load.** It ranged from 30 to 101 VA within one session as its
+battery went from 57 % to 17 % with the laptop in use — a 3.4x spread, wider
+than the distance to the fan. That is a property of the appliance and it
+matters for stage 4.
 
 **9. Charger's on/off transitions form two separate clusters.** The charger's
 on-transition magnitude (~30-67 VA, sharing cluster 1 with the fan) and its
@@ -210,16 +250,35 @@ off-transition magnitude (~83-101 VA, its own cluster 2 in session-2) differ
 by more than `epsilonVa`, so the same physical appliance is split across two
 clusters depending on switching direction.
 
-**10. Resolution-stress conflation (expected, different partner than
-predicted).** The soldering iron was deliberately chosen to draw a magnitude
-close to another appliance's; the issue predicted it would fall inside the
-fan's ~38-57 VA cluster. The measured iron magnitude (~55-63 VA) instead
-overlapped the charger's rep-3 on-event (61.4 VA), and all 10 of the iron's
-on/off events land in that cluster instead of forming their own. The
-epsilon-resolution limit surfaces exactly as the scenario intends, just
-against the charger rather than the fan, a difference in which appliance's
-magnitude the iron happened to land closest to on the day, not a different
-phenomenon.
+*Corrected on review (26 Aug 2026).* The on-transition band quoted here
+(~30-67 VA) is largely made of **unfused fragments** (item 2), not of the
+charger's true on-step. Once merged on the correct clock, those fragments sum
+to ~101 VA — the same band as the off-transitions. The split is therefore
+mostly an artefact of the defect, and should shrink sharply once it is fixed.
+Whether any split survives is a question for the confirmation session, not
+something this session can answer.
+
+**10. Resolution-stress scenario — the iron DID form its own cluster, and the
+resolution limit got located.** *Rewritten on review (26 Aug 2026); the earlier
+wording said the iron failed to form its own cluster, which is not what the
+data shows.*
+
+The soldering iron was deliberately chosen to draw a magnitude close to the
+fan's, and the handoff predicted the two would fuse. **They did not.** In
+session-4 the fan's cluster ends at **41.6 VA** and the iron's cluster begins
+at **54.9 VA**: a gap of **13.3 VA against `epsilonVa` = 12** — a margin of
+**1.3 VA**. All 10 iron events formed a cluster of their own, distinct from the
+fan's.
+
+What did happen is that one charger on-event (61.4 VA) fell inside the iron's
+cluster. That is a third appliance contaminating the iron's cluster, not the
+iron failing to resolve.
+
+This is the strongest result of the session and it should be read as a success,
+not a conflation: **the resolution limit of the method has been located to
+roughly one volt-ampere by deliberate experiment.** Two loads 13.3 VA apart
+separate at `epsilonVa` = 12; the scenario shows the boundary sits just below
+that, and it does so with measured numbers rather than an assertion.
 
 **11. Simultaneous switching (expected, with a wrinkle).** Pair fan+charger's
 "simultaneous" on-flip actually landed as two events ~4 s apart in the raw
