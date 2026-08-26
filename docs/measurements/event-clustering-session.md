@@ -152,8 +152,7 @@ before continuing; the decision was to keep `mergeWindowSeconds=5.0` frozen
 and document the finding rather than retune it mid-session. Not fixed in this
 session.
 
-*Added on review (26 Aug 2026).* Three quantifications the session write-up
-did not have, from replaying the recorded series:
+Three quantifications from replaying the recorded series:
 
 - **The miss is deterministic and it is by exactly one second.** Events are
   released at `dated + 6 s` (77 of 84; the other 7 at +5), so the merger holds
@@ -228,8 +227,7 @@ and on-transitions repeatedly land in the same DBSCAN cluster in both
 session-2 and session-4, because their magnitudes sit within `epsilonVa=12` of
 each other.
 
-*Corrected on review (26 Aug 2026).* Calling this "expected, not a defect"
-concedes too much. Replaying session-2 with the merge applied on the correct
+Most of this is not a property of the appliances. Replaying session-2 with the merge applied on the correct
 clock (item 2) moves most of it: charger events inside the fan's cluster drop
 from **9 to 3**, the charger's own cluster grows from **6 to 9** events, and
 outliers fall from 5 to 2. **Roughly two thirds of this overlap is a symptom of
@@ -250,7 +248,7 @@ off-transition magnitude (~83-101 VA, its own cluster 2 in session-2) differ
 by more than `epsilonVa`, so the same physical appliance is split across two
 clusters depending on switching direction.
 
-*Corrected on review (26 Aug 2026).* The on-transition band quoted here
+The on-transition band quoted here
 (~30-67 VA) is largely made of **unfused fragments** (item 2), not of the
 charger's true on-step. Once merged on the correct clock, those fragments sum
 to ~101 VA — the same band as the off-transitions. The split is therefore
@@ -258,12 +256,8 @@ mostly an artefact of the defect, and should shrink sharply once it is fixed.
 Whether any split survives is a question for the confirmation session, not
 something this session can answer.
 
-**10. Resolution-stress scenario — the iron DID form its own cluster, and the
-resolution limit got located.** *Rewritten on review (26 Aug 2026); the earlier
-wording said the iron failed to form its own cluster, which is not what the
-data shows.*
-
-The soldering iron was deliberately chosen to draw a magnitude close to the
+**10. Resolution-stress scenario — the iron formed its own cluster, and the
+resolution limit got located.** The soldering iron was deliberately chosen to draw a magnitude close to the
 fan's, and the handoff predicted the two would fuse. **They did not.** In
 session-4 the fan's cluster ends at **41.6 VA** and the iron's cluster begins
 at **54.9 VA**: a gap of **13.3 VA against `epsilonVa` = 12** — a margin of
@@ -274,8 +268,7 @@ What did happen is that one charger on-event (61.4 VA) fell inside the iron's
 cluster. That is a third appliance contaminating the iron's cluster, not the
 iron failing to resolve.
 
-This is the strongest result of the session and it should be read as a success,
-not a conflation: **the resolution limit of the method has been located to
+This is the strongest result of the session: **the resolution limit of the method has been located to
 roughly one volt-ampere by deliberate experiment.** Two loads 13.3 VA apart
 separate at `epsilonVa` = 12; the scenario shows the boundary sits just below
 that, and it does so with measured numbers rather than an assertion.

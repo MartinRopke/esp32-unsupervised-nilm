@@ -141,6 +141,36 @@ points of the row itself are untouched. Repair: strip the garbage prefix, keep t
 the ten affected rows across both files carries an event (`event` field is `0` in all of them);
 the transmission noise never touched a row this session's analysis depends on.
 
+**3. Item 5 was captured twice; the first take was discarded.** The first ten-minute sandwich-maker run
+was cut short after the operator disturbed the sensor wire mid-capture and injected noise into the
+signal. The item was re-run from the start and only the second take is in
+`event-clustering-confirm-2.csv`; the first take's file was not kept. The discard was the operator's, on
+a disturbance he had caused and observed, not on anything the data showed. Recorded here for the same
+reason as item 1 of the 25/08 session's miscount: this bench notebook reports its mishaps.
+
+## A merge missed by 1.1 milliseconds
+
+The charger's second switch-on released as **two separate events**
+(37.9 VA dated 714.019409, 47.5 VA dated 719.020508) that should have fused: they are the same direction
+and nominally five sampling intervals apart. The measured gap is **5.001099 s**, against a
+`mergeWindowSeconds` of 5.0. **The merge was missed by 1.1 ms.**
+
+The dated instants come from `micros()` at window close, and windows are closed by elapsed time rather
+than by a fixed sample count, so successive dated instants are not exactly 1.000000 s apart. Over five
+windows the jitter accumulated past the boundary.
+
+This is not the method's resolution limit and should not be written as one. The design states the window
+as *"the confirmation window plus one sample of slack"* — an interval count — while the code compares
+floating-point seconds against a jittery clock. A nominal five-interval gap that measures 5.0011 s
+defeats the stated intent.
+
+Cost, measured: with this pair fused, the charger would have fused **3 of 5** switch-ons instead of 2,
+and this cluster would hold **1** charger event instead of 3.
+
+Not changed in this session, per the standing "stop and flag, do not tune" rule. Expressing the window in
+sampling intervals rather than seconds would fix it without changing the designed value; widening the
+constant would be tuning. That is a decision for a separate issue, not for the bench.
+
 ## Counts
 
 - 22 ground truth actions across both files (`event-clustering-confirm-ground-truth.csv`, capture
