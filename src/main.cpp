@@ -130,8 +130,8 @@ void loop() {
     // tick, so a held fragment isn't stuck waiting for one that never arrives.
     MergeResult merge{};
     if (result.windowClosed) {
-      merge =
-          detection.eventDetected ? eventMerger.addEvent(detection.event) : eventMerger.tick(now);
+      merge = detection.eventDetected ? eventMerger.addEvent(detection.event, now)
+                                      : eventMerger.tick(now);
     }
 
     // The clusterer only sees a released (possibly merged) event, never a raw fragment.
