@@ -41,10 +41,17 @@ static constexpr EventDetectorConfig kEventDetectorConfig = {
 // A transition spanning several sampling intervals reaches the detector as
 // 2-4 fragments of one appliance switching, close in time and far apart in
 // magnitude; merging them prevents one appliance from being seen as
-// several. 5.0 s: one confirmation window (3 s) plus one sample is the
-// minimum possible gap between fragments, so 5 s adds one sample of slack.
+// several. 5 samples: one confirmation window (3 s) plus one sample is the
+// minimum possible gap between fragments, so 5 samples adds one sample of
+// slack. Expressed as a sample count rather than a bare seconds value
+// because the dated instants it compares come from a window that closes on
+// elapsed time, not a fixed sample count (see EventMergerConfig): a bare
+// `mergeWindowSeconds` let jitter of about a millisecond push a genuine pair
+// just past a floating-point boundary. sampleIntervalSeconds matches
+// kConfig.rmsWindowSeconds, the nominal period between dated instants.
 static constexpr EventMergerConfig kEventMergerConfig = {
-    /* mergeWindowSeconds */ 5.0f,  // [s]
+    /* mergeWindowSamples    */ 5,
+    /* sampleIntervalSeconds */ 1.0f,  // [s]
 };
 
 // epsilonVa: 2 sigma of the pooled within-appliance dispersion measured

@@ -11,9 +11,13 @@ static constexpr float kDetectorDelaySeconds = 3.0f;
 
 static EventMergerConfig makeConfig() {
   EventMergerConfig c;
-  c.mergeWindowSeconds = 5.0f;
+  c.mergeWindowSamples = 5;
+  c.sampleIntervalSeconds = 1.0f;
   return c;
 }
+
+// The nominal merge window in seconds under makeConfig(): 5 samples * 1.0 s.
+static constexpr float kMergeWindowSeconds = 5.0f;
 
 static uint32_t toMicros(float seconds) { return static_cast<uint32_t>(seconds * 1e6f + 0.5f); }
 
@@ -90,24 +94,24 @@ void test_same_direction_events_past_window_are_not_merged(void) {
 // The merge condition reads dated instants, not arrival, even when a
 // varying detector delay would put the second fragment's arrival inside
 // what the (wrong) window based on arrival would allow. Fragment B is dated
-// 5.5 s after A, past mergeWindowSeconds, but a shorter confirmation
-// delay lets it arrive only 3.5 s after A's arrival, well inside a 5 s
-// hold. It must still not merge: the merge decision does not get to see
-// arrival time at all.
+// 6.0 s after A (six sampling intervals, past the merge window with its
+// jitter tolerance), but a shorter confirmation delay lets it arrive only
+// 3.5 s after A's arrival, well inside a 5 s hold. It must still not merge:
+// the merge decision does not get to see arrival time at all.
 void test_same_direction_past_window_in_dated_time_does_not_merge_despite_close_arrival(void) {
   EventMerger merger(makeConfig());
 
   MergeResult first = merger.addEvent(makeEvent(0.0f, 50.0f, Direction::kOn), toMicros(3.0f));
   TEST_ASSERT_FALSE(first.eventReady);
 
-  MergeResult released = merger.addEvent(makeEvent(5.5f, 45.0f, Direction::kOn), toMicros(6.5f));
+  MergeResult released = merger.addEvent(makeEvent(6.0f, 45.0f, Direction::kOn), toMicros(6.5f));
   TEST_ASSERT_TRUE(released.eventReady);
   TEST_ASSERT_EQUAL_UINT32(1, released.fragments);
   TEST_ASSERT_FLOAT_WITHIN(0.01f, 50.0f, released.event.magnitudeVa);
 }
 
-// An event with nothing following it is released once mergeWindowSeconds
-// have elapsed on the wall clock since its arrival (dated + detector delay),
+// An event with nothing following it is released once the merge window
+// has elapsed on the wall clock since its arrival (dated + detector delay),
 // not since its dated instant: driven by tick() alone, no other event
 // forces it out.
 void test_event_with_no_follow_up_released_by_tick_alone(void) {
@@ -183,12 +187,76 @@ void test_measured_series_regression_pairs_fuse_to_expected_magnitude(void) {
     MergeResult second = addFragment(merger, pair.datedB, pair.magnitudeB, Direction::kOn);
     TEST_ASSERT_FALSE(second.eventReady);
 
-    MergeResult released = merger.tick(
-        toMicros(pair.datedB + kDetectorDelaySeconds + makeConfig().mergeWindowSeconds + 0.1f));
+    MergeResult released =
+        merger.tick(toMicros(pair.datedB + kDetectorDelaySeconds + kMergeWindowSeconds + 0.1f));
     TEST_ASSERT_TRUE(released.eventReady);
     TEST_ASSERT_EQUAL_UINT32(2, released.fragments);
     TEST_ASSERT_FLOAT_WITHIN(0.1f, pair.expectedMergedMagnitude, released.event.magnitudeVa);
   }
+}
+
+// The pair from ISSUE-merge-window-in-samples.md: the real dated instants
+// from event-clustering-confirm.csv, not rounded, because the whole defect
+// lives in the fractional part. The gap is 5.001099 s, 1.1 ms past a bare
+// 5.0 s window; the jitter tolerance must let it fuse.
+void test_measured_confirm_session_pair_fuses_despite_jitter(void) {
+  EventMerger merger(makeConfig());
+
+  MergeResult first = addFragment(merger, 714.019409f, 37.9f, Direction::kOn);
+  TEST_ASSERT_FALSE(first.eventReady);
+
+  MergeResult second = addFragment(merger, 719.020508f, 47.5f, Direction::kOn);
+  TEST_ASSERT_FALSE(second.eventReady);
+
+  MergeResult released =
+      merger.tick(toMicros(719.020508f + kDetectorDelaySeconds + kMergeWindowSeconds + 0.1f));
+  TEST_ASSERT_TRUE(released.eventReady);
+  TEST_ASSERT_EQUAL_UINT32(2, released.fragments);
+  TEST_ASSERT_FLOAT_WITHIN(0.05f, 85.4f, released.event.magnitudeVa);
+}
+
+// A nominally five-interval gap that measures slightly under or slightly
+// over 5.0 s, jitter in either direction, still fuses: the designed value
+// is five sampling intervals, not a bare 5.0 s floating-point comparison.
+void test_five_interval_gap_fuses_with_jitter_either_direction(void) {
+  {
+    EventMerger merger(makeConfig());
+    addFragment(merger, 0.0f, 30.0f, Direction::kOn);
+    MergeResult second = addFragment(merger, 4.9f, 20.0f, Direction::kOn);
+    TEST_ASSERT_FALSE(second.eventReady);
+
+    MergeResult released =
+        merger.tick(toMicros(4.9f + kDetectorDelaySeconds + kMergeWindowSeconds + 0.1f));
+    TEST_ASSERT_TRUE(released.eventReady);
+    TEST_ASSERT_EQUAL_UINT32(2, released.fragments);
+  }
+  {
+    EventMerger merger(makeConfig());
+    addFragment(merger, 0.0f, 30.0f, Direction::kOn);
+    MergeResult second = addFragment(merger, 5.1f, 20.0f, Direction::kOn);
+    TEST_ASSERT_FALSE(second.eventReady);
+
+    MergeResult released =
+        merger.tick(toMicros(5.1f + kDetectorDelaySeconds + kMergeWindowSeconds + 0.1f));
+    TEST_ASSERT_TRUE(released.eventReady);
+    TEST_ASSERT_EQUAL_UINT32(2, released.fragments);
+  }
+}
+
+// Six nominal sampling intervals, even reduced by jitter in the favourable
+// direction (5.6 s measured against a 6.0 s nominal gap), still does not
+// fuse: the tolerance buys half a sampling interval of slack on top of the
+// 5-interval window (a 5.5 s effective boundary), not a whole interval, so
+// it does not also swallow a gap one interval wider than the designed
+// window.
+void test_six_interval_gap_does_not_fuse_despite_favourable_jitter(void) {
+  EventMerger merger(makeConfig());
+  addFragment(merger, 0.0f, 30.0f, Direction::kOn);
+  MergeResult released = addFragment(merger, 5.6f, 20.0f, Direction::kOn);
+
+  TEST_ASSERT_TRUE(released.eventReady);
+  TEST_ASSERT_EQUAL_UINT32(1, released.fragments);
+  TEST_ASSERT_FLOAT_WITHIN(0.01f, 30.0f, released.event.magnitudeVa);
 }
 
 // The first three charger pairs above sum to the charger's true off
@@ -326,6 +394,9 @@ int main(int, char**) {
   RUN_TEST(test_event_with_no_follow_up_released_by_tick_alone);
   RUN_TEST(test_single_event_comes_out_unchanged);
   RUN_TEST(test_measured_series_regression_pairs_fuse_to_expected_magnitude);
+  RUN_TEST(test_measured_confirm_session_pair_fuses_despite_jitter);
+  RUN_TEST(test_five_interval_gap_fuses_with_jitter_either_direction);
+  RUN_TEST(test_six_interval_gap_does_not_fuse_despite_favourable_jitter);
   RUN_TEST(test_charger_pairs_sum_matches_off_transition_band);
   RUN_TEST(test_fragments_count_reaches_two_on_merge);
   RUN_TEST(test_confirmation_session_fixture_merges_forty_three_events_into_thirty_nine);

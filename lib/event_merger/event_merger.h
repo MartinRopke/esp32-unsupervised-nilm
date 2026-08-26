@@ -12,9 +12,17 @@
 // fuses consecutive same-direction fragments into a single event and
 // releases it once no further fragment arrives inside the merge window.
 
-// Single install configuration block, injected rather than hardcoded.
+// Single install configuration block, injected rather than hardcoded. The
+// merge window is expressed as a sample count rather than a bare seconds
+// value because the fragments it compares are dated by a window that closes
+// on elapsed time, not on a fixed sample count (Meter's RMS window is a
+// multiple of the mains cycle, which is not an integer number of ADC samples
+// at 860 SPS): successive dated instants drift by a fraction of a sample
+// interval, and comparing against a bare seconds constant lets that drift
+// push a genuine same-appliance pair just past the boundary.
 struct EventMergerConfig {
-  float mergeWindowSeconds;  // MERGE_WINDOW_SECONDS  [s]  e.g. 5.0
+  uint32_t mergeWindowSamples;  // MERGE_WINDOW_SAMPLES         e.g. 5
+  float sampleIntervalSeconds;  // SAMPLE_INTERVAL_SECONDS  [s] e.g. 1.0
 };
 
 // Result of feeding one input to the EventMerger. `event` and `fragments`
@@ -36,11 +44,11 @@ struct MergeResult {
 // The detector reports an event one confirmation window (~3 s) after the
 // instant it dates it to, so a fragment's arrival always trails its dated
 // instant. Releasing on the dated clock therefore eats into the hold: with
-// mergeWindowSeconds = 5 s and a 3 s confirmation delay, a release keyed to
+// a 5-sample merge window and a 3 s confirmation delay, a release keyed to
 // the dated instant only holds for 2 s of real time. Keyed to arrival
-// instead, classification latency becomes detection (~3 s) plus the full 5 s
-// hold, about 8 s end to end; detection latency itself is unchanged at
-// ~3 s.
+// instead, classification latency becomes detection (~3 s) plus the full
+// merge-window hold, about 8 s end to end; detection latency itself is
+// unchanged at ~3 s.
 class EventMerger {
  public:
   explicit EventMerger(const EventMergerConfig& config);
@@ -48,14 +56,14 @@ class EventMerger {
   // Feeds one detected event, along with the wall clock time it arrived
   // (nowMicros, independent of the event's own dated timestamp). If an event
   // is already held and this one shares its direction and its dated instant
-  // falls within mergeWindowSeconds of the held event's last fragment, it is
+  // falls within the merge window of the held event's last fragment, it is
   // folded in (magnitude summed, fragment count incremented) and nothing is
   // released yet. Otherwise the held event, if any, is released, and this
   // one becomes the newly held event.
   MergeResult addEvent(const Event& event, uint32_t nowMicros);
 
   // Advances the merger's clock without a new event. Releases the held
-  // event once mergeWindowSeconds have elapsed, on the wall clock, since its
+  // event once the merge window has elapsed, on the wall clock, since its
   // last fragment arrived. Call once per closed sampling window that
   // carries no detected event, so a held event is not stuck waiting for a
   // fragment that never arrives.
@@ -69,8 +77,24 @@ class EventMerger {
     uint32_t fragments;
   };
 
+  // mergeWindowSamples * sampleIntervalSeconds, the nominal merge window in
+  // seconds.
+  float mergeWindowSeconds() const;
+
   MergeResult release();
+
+  // Compares a candidate fragment's dated instant against the held
+  // fragment's, tolerant of the RMS-window-close jitter documented on
+  // EventMergerConfig: a gap up to half a sampling interval past the nominal
+  // merge window still counts, so the jitter this class exists to absorb
+  // does not itself defeat the merge. Half an interval buys slack for a
+  // nominally in-window gap without also admitting a gap one full interval
+  // wider (see the six-interval regression test).
   bool withinMergeWindow(uint32_t timestampMicros) const;
+
+  // Unrelated to withinMergeWindow's jitter tolerance: this is the release
+  // condition #27 fixed, run on arrival time, not on the dated clock, and is
+  // not touched by this jitter fix.
   bool pastReleaseWindow(uint32_t nowMicros) const;
 
   EventMergerConfig config_;
