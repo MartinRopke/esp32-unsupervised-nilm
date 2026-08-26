@@ -90,6 +90,20 @@ inline constexpr PowerFactorCategory kPowerFactorLaptopCharger = {
     "Hannagan et al. 2023, Sustainability 15(1):158",
 };
 
+// What the tariff behind the cost figures is, printed with every report so a
+// saved artefact carries its own premise rather than a bare figure in reais.
+//
+// The tariff is a configuration constant of the installation, like
+// mainsVoltage: it is declared, not measured, and the study does not depend
+// on its value. It scales every cost identically and therefore cancels out of
+// a percentage error, where both the system and the reference use the same
+// figure. Any value would date; keeping it configurable is the point.
+// Fetching a live or current tariff is a separate problem and out of scope.
+//
+// Change it with kConfig.tariff in src/main.cpp, and keep the two in step.
+inline constexpr const char* kTariffSource =
+    "declared installation constant, not a measurement; cost scales with it";
+
 // The extreme |power factor| magnitudes across the whole table above,
 // spanning every category regardless of which one, if any, is assigned to
 // a cluster. Needs no human input, so a cost range from these bounds can be

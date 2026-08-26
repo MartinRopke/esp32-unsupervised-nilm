@@ -307,6 +307,70 @@ void test_measured_charger_cluster_fixture_from_confirm_session(void) {
   TEST_ASSERT_EQUAL_UINT32(0, stats.truncatedCycles);
 }
 
+// Every report states the tariff it used and where that value came from, so a
+// saved artefact carries its own assumption instead of a bare figure in reais.
+void test_report_states_the_tariff_and_its_provenance(void) {
+  ClusterReporter reporter(makeConfig());
+
+  std::vector<Event> events = {
+      makeEvent(0.0f, 100.0f, Direction::kOn),
+      makeEvent(3600.0f, 100.0f, Direction::kOff),
+  };
+  std::vector<int32_t> clusterIds = {11, 11};
+
+  std::vector<LabeledEvent> labels = feedWithLabels(reporter, events, clusterIds);
+  ClusterReport report = reporter.buildReport(labels, toMicros(3600.0f));
+
+  std::string console = formatClusterReportConsole(report, 0.92f, {{11, kPowerFactorFan}});
+  TEST_ASSERT_TRUE(console.find("tariff: R$ 0.9200/kWh") != std::string::npos);
+  TEST_ASSERT_TRUE(console.find(kTariffSource) != std::string::npos);
+
+  std::string csv = formatClusterReportCsv(report, 0.92f, {{11, kPowerFactorFan}});
+  TEST_ASSERT_TRUE(csv.find("tariff_reais_per_kwh,tariff_source") != std::string::npos);
+  TEST_ASSERT_TRUE(csv.find("0.9200,\"") != std::string::npos);
+}
+
+// A power-factor source string carries commas, so the CSV must quote it or the
+// row silently gains a column and every field after it shifts.
+void test_csv_quotes_fields_that_contain_commas(void) {
+  ClusterReporter reporter(makeConfig());
+
+  std::vector<Event> events = {
+      makeEvent(0.0f, 100.0f, Direction::kOn),
+      makeEvent(3600.0f, 100.0f, Direction::kOff),
+  };
+  std::vector<int32_t> clusterIds = {11, 11};
+
+  std::vector<LabeledEvent> labels = feedWithLabels(reporter, events, clusterIds);
+  ClusterReport report = reporter.buildReport(labels, toMicros(3600.0f));
+
+  std::string csv = formatClusterReportCsv(report, 0.92f, {{11, kPowerFactorFan}});
+  TEST_ASSERT_TRUE(csv.find(std::string("\"") + kPowerFactorFan.source + "\"") !=
+                   std::string::npos);
+
+  // Header and data row must agree on field count once quoting is honoured.
+  const std::string header = csv.substr(0, csv.find('\n'));
+  const std::string row = csv.substr(csv.find('\n') + 1);
+  size_t headerFields = 1;
+  for (const char c : header) {
+    if (c == ',') {
+      ++headerFields;
+    }
+  }
+  size_t rowFields = 1;
+  bool inQuotes = false;
+  for (const char c : row) {
+    if (c == '"') {
+      inQuotes = !inQuotes;
+    } else if (c == ',' && !inQuotes) {
+      ++rowFields;
+    } else if (c == '\n') {
+      break;
+    }
+  }
+  TEST_ASSERT_EQUAL_UINT32(headerFields, rowFields);
+}
+
 void setUp(void) {}
 void tearDown(void) {}
 
@@ -322,5 +386,7 @@ int main(int, char**) {
   RUN_TEST(test_cost_prints_assumed_power_factor_alongside_it);
   RUN_TEST(test_csv_form_carries_the_same_figures);
   RUN_TEST(test_measured_charger_cluster_fixture_from_confirm_session);
+  RUN_TEST(test_report_states_the_tariff_and_its_provenance);
+  RUN_TEST(test_csv_quotes_fields_that_contain_commas);
   return UNITY_END();
 }

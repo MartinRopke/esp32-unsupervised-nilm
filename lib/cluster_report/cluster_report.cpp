@@ -109,6 +109,21 @@ std::string formatFixed(float value, int decimals) {
   return buffer;
 }
 
+// Wraps a field in double quotes, doubling any embedded quote, so a value
+// carrying commas stays one CSV field. Every power-factor source string does
+// carry one, and without this the row silently gains a column.
+std::string csvQuoted(const std::string& field) {
+  std::string out = "\"";
+  for (const char c : field) {
+    if (c == '"') {
+      out += '"';
+    }
+    out += c;
+  }
+  out += '"';
+  return out;
+}
+
 std::string formatHms(uint32_t elapsedMicros) {
   const uint32_t totalSeconds = elapsedMicros / 1000000u;
   const uint32_t hours = totalSeconds / 3600u;
@@ -132,7 +147,8 @@ const PowerFactorCategory* findAssignment(
 std::string formatClusterReportConsole(
     const ClusterReport& report, float tariffReaisPerKwh,
     const std::vector<ClusterPowerFactorAssignment>& assignments) {
-  std::string out;
+  std::string out = "tariff: R$ " + formatFixed(tariffReaisPerKwh, 4) + "/kWh   (" +
+                    std::string(kTariffSource) + ")\n";
 
   for (const PerClusterStats& stats : report.clusters) {
     out += "Device " + std::to_string(stats.clusterId) + " (cluster " +
@@ -183,7 +199,7 @@ std::string formatClusterReportCsv(const ClusterReport& report, float tariffReai
       "cluster,complete_cycles,operating_time_s,mean_power_pair_va,mean_power_cluster_va,"
       "apparent_energy_vah,truncated_cycles,truncated_energy_vah,off_without_on,"
       "power_factor_used,power_factor_source,estimated_cost_reais,cost_range_min_reais,"
-      "cost_range_max_reais\n";
+      "cost_range_max_reais,tariff_reais_per_kwh,tariff_source\n";
 
   for (const PerClusterStats& stats : report.clusters) {
     out += std::to_string(stats.clusterId) + "," + std::to_string(stats.completeCycles) + "," +
@@ -195,7 +211,7 @@ std::string formatClusterReportCsv(const ClusterReport& report, float tariffReai
            std::to_string(stats.offWithoutOnDiscarded) + ",";
 
     if (stats.completeCycles == 0) {
-      out += ",,,,\n";
+      out += ",,,,," + formatFixed(tariffReaisPerKwh, 4) + "," + csvQuoted(kTariffSource) + "\n";
       continue;
     }
 
@@ -203,7 +219,7 @@ std::string formatClusterReportCsv(const ClusterReport& report, float tariffReai
     if (assigned != nullptr) {
       const float cost =
           estimateCostReais(stats.apparentEnergyVah, assigned->magnitude, tariffReaisPerKwh);
-      out += formatFixed(assigned->magnitude, 2) + "," + std::string(assigned->source) + "," +
+      out += formatFixed(assigned->magnitude, 2) + "," + csvQuoted(assigned->source) + "," +
              formatFixed(cost, 4) + ",";
     } else {
       out += ",,,";
@@ -213,7 +229,8 @@ std::string formatClusterReportCsv(const ClusterReport& report, float tariffReai
                                             tariffReaisPerKwh);
     const float costMax = estimateCostReais(stats.apparentEnergyVah, kPowerFactorRangeMaxMagnitude,
                                             tariffReaisPerKwh);
-    out += formatFixed(costMin, 4) + "," + formatFixed(costMax, 4) + "\n";
+    out += formatFixed(costMin, 4) + "," + formatFixed(costMax, 4) + "," +
+           formatFixed(tariffReaisPerKwh, 4) + "," + csvQuoted(kTariffSource) + "\n";
   }
 
   return out;
