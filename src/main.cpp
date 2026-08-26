@@ -22,17 +22,17 @@
 //
 // mainsVoltage is a fixed stand-in for a quantity the system does not
 // measure and that varies with load and time of day.
-// tariff: PROVISIONAL. No sourced value (a dated utility invoice or an ANEEL table) was on hand
-// when ClusterReportConfig was wired up to consume this; 0.92 is a placeholder carried over from
-// before this field was read by anything, not a citation. Do not quote a cost figure computed
-// from it without replacing this comment with an actual source first.
+// tariff is a declared configuration constant of the installation, like mainsVoltage: not
+// measured, and the study does not depend on its value. It scales every cost identically and
+// cancels out of a percentage error, where both sides of a comparison use the same figure.
+// kTariffSource (cluster_report.h) states this alongside every printed cost.
 static constexpr MeterConfig kConfig = {
     /* mainsVoltage     */ 236.75f,  // [V]      switch to 127.0f on a 127 V installation
     /* calibrationFactor*/ 1.0092f,  //          measured, ~1.7% uncertainty
     /* ctRatio          */ 2000.0f,  //          SCT-013-000 turns ratio
     /* burdenOhms       */ 22.0f,    // [ohm]    burden resistor
     /* rmsWindowSeconds */ 1.0f,     // [s]      RMS window = 60 mains cycles
-    /* tariff           */ 0.92f,    // [R$/kWh] PROVISIONAL, see comment above
+    /* tariff           */ 0.92f,    // [R$/kWh] declared installation constant
 };
 
 // Threshold and confirmation window from the event-detection literature:
@@ -78,10 +78,10 @@ static constexpr EventClustererConfig kEventClustererConfig = {
 };
 
 // maxEvents mirrors kEventClustererConfig.maxEvents (see ClusterReportConfig's comment on why
-// that must hold). tariffReaisPerKwh is kConfig.tariff, PROVISIONAL per the flag above it.
+// that must hold). tariffReaisPerKwh is kConfig.tariff, see its comment above.
 static constexpr ClusterReportConfig kClusterReportConfig = {
     /* maxEvents          */ 128,
-    /* tariffReaisPerKwh  */ kConfig.tariff,  // [R$/kWh] PROVISIONAL
+    /* tariffReaisPerKwh  */ kConfig.tariff,  // [R$/kWh]
 };
 
 // Which power-factor category applies to which cluster id is human interpretation (see

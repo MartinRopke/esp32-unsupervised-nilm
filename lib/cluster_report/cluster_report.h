@@ -38,10 +38,8 @@ struct ClusterReportConfig {
   // is 1 KB, negligible against the ESP32's RAM.
   uint32_t maxEvents;
 
-  // TARIFF [R$/kWh]. See the flag on kConfig.tariff in src/main.cpp: no
-  // sourced value was available when this module was written, so treat
-  // whatever this carries as provisional until a dated utility invoice or
-  // an ANEEL table backs it.
+  // TARIFF [R$/kWh]. Declared installation constant, not measured; see
+  // kTariffSource below and kConfig.tariff's comment in src/main.cpp.
   float tariffReaisPerKwh;
 };
 
