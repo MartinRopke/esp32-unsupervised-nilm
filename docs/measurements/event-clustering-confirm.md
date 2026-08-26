@@ -124,7 +124,7 @@ in both capture files (each file opens its own port, so each pays the same start
 opening the port (to let the ESP32 finish its post-flash boot) and then called
 `reset_input_buffer()` to discard whatever had accumulated during that wait. The header line
 (`Serial.println` in `setup()`) is printed within the first second, well inside that 3 s window,
-so it was discarded along with it -- and the buffer clear landed mid-transmission of the very
+so it was discarded along with it, and the buffer clear landed mid-transmission of the very
 first data row, keeping everything after its first comma but losing the `t_s` field itself. Fix:
 the header was reconstructed from `src/main.cpp`'s literal header string (unchanged since
 stage 2), and the one truncated row in each file (a single repose-phase baseline sample with no
@@ -132,11 +132,11 @@ stage 2), and the one truncated row in each file (a single repose-phase baseline
 
 **2. Rows arrived prefixed with a long run of `U+FFFD` replacement-character bytes**: eight in
 `event-clustering-confirm.csv` (`t_s` ~145, ~638, ~672, ~766, ~796, ~2027, ~2099, ~2405) and two
-in `event-clustering-confirm-2.csv` (`t_s` ~47, ~360) -- a burst of raw bytes the USB-serial link
+in `event-clustering-confirm-2.csv` (`t_s` ~47, ~360): a burst of raw bytes the USB-serial link
 corrupted badly enough that `bytes.decode(errors="replace")` in the capture script turned each
 corrupted byte into a placeholder, and because none of those placeholder bytes is a newline, the
 whole burst got read as part of one line ending at the next real `\n`. In every case the burst
-sits **before** an otherwise complete, well-formed CSV row -- the digits, commas and decimal
+sits **before** an otherwise complete, well-formed CSV row: the digits, commas and decimal
 points of the row itself are untouched. Repair: strip the garbage prefix, keep the row. None of
 the ten affected rows across both files carries an event (`event` field is `0` in all of them);
 the transmission noise never touched a row this session's analysis depends on.
@@ -174,10 +174,10 @@ constant would be tuning. That is a decision for a separate issue, not for the b
 ## Counts
 
 - 22 ground truth actions across both files (`event-clustering-confirm-ground-truth.csv`, capture
-  labels `confirm` and `confirm-2`): sync mark (2), charger isolated cycles (9 -- one physical
+  labels `confirm` and `confirm-2`): sync mark (2), charger isolated cycles (9; one physical
   "on" action produced no detected event, see "Item 3"), fan isolated cycles (10), item 5's
   manual on (1). Autonomous thermostat transitions are real events but, matching the 24/08 and
-  25/08 sessions' own convention, are not logged as individual ground truth rows -- described
+  25/08 sessions' own convention, are not logged as individual ground truth rows, described
   narratively below instead.
 - 29 events released total: 24 in `event-clustering-confirm.csv` (items 1-4) and 5 in
   `event-clustering-confirm-2.csv` (item 5). All 29 are valid and used in the reading below.
@@ -186,20 +186,20 @@ constant would be tuning. That is a decision for a separate issue, not for the b
 
 - **Item 1 (conferência do artefato de conexão)**: repouso limpo (0.29 +/- 0.007 VA, n=148).
   Sanduicheira conduzindo até o corte natural (n=134, t_s 166-300): desvio relativo 1.12%
-  (mean 795.3 VA, sd 8.9 VA) -- quase idêntico ao 1.12% (796.5 VA) da sessão de 24/08, e longe do
+  (mean 795.3 VA, sd 8.9 VA), quase idêntico ao 1.12% (796.5 VA) da sessão de 24/08, e longe do
   artefato de 4.4%-4.8% descrito no handoff. Conexão validada.
 - **Item 2 (marco de sincronismo)**: liga 791.7 VA em `t_s=534.02`, reportado em `t_s=543.02`
   (datado+9s); desliga 794.2 VA em `t_s=552.02`, reportado em `t_s=561.02` (datado+9s). Ambos
   eventos únicos (`fragments`=1). A assinatura de tempo já mudou de +6s (defeito) para +9s
   (~8s teóricos mais até 1s de granularidade da janela de 1 Hz).
-- **Item 3 (carregador, 5 ciclos)**: **o teste mais importante passou -- `fragments` > 1
+- **Item 3 (carregador, 5 ciclos)**: **o teste mais importante passou: `fragments` > 1
   apareceu**, coisa que não aconteceu em nenhuma das 84 liberações de 25/08. Dois dos 5 liga
-  fundiram: 82.2 VA (fragments=2, ciclo 1) e 100.7 VA (fragments=2, ciclo 5) -- este último quase
+  fundiram: 82.2 VA (fragments=2, ciclo 1) e 100.7 VA (fragments=2, ciclo 5), este último quase
   exatamente a previsão do handoff (~101 VA). Os outros 3 liga saíram como fragmento único
-  subestimado (37.9, 47.5, 56.3 VA) ou, num caso, abaixo do limiar e não detectado -- a rampa de
+  subestimado (37.9, 47.5, 56.3 VA) ou, num caso, abaixo do limiar e não detectado: a rampa de
   partida ruidosa do carregador, já declarada fora de escopo desta correção (mesmo padrão do
   levantamento de 24/08). Os 5 desliga saíram limpos, evento único, 91.7-100.1 VA.
-- **Item 4 (ventilador, 5 ciclos)**: limpo, sem ambiguidade -- 5 liga (46.7-50.6 VA) e 5 desliga
+- **Item 4 (ventilador, 5 ciclos)**: limpo, sem ambiguidade: 5 liga (46.7-50.6 VA) e 5 desliga
   (38.3-42.6 VA), todos `fragments`=1.
 - **Item 5 (dez minutos, sanduicheira sozinha, `event-clustering-confirm-2.csv`)**: liga manual
   limpo em `t_s=26.02` (812.2 VA, `fragments`=1). A janela de 10 minutos exigida (`t_s` 26-626)
@@ -209,7 +209,7 @@ constant would be tuning. That is a decision for a separate issue, not for the b
   `fragments`=1, ~8s de distância um do outro), em vez de somarem à magnitude nominal (~790 VA)
   num único evento. Um segundo corte autônomo fechou a janela em `t_s=494.02` (794.3 VA,
   `fragments`=1). Desligamento manual às `t_s=677.02` (fim do arquivo): sem evento, porque a
-  sanduicheira já estava em corte autônomo nesse instante -- o desligamento manual foi
+  sanduicheira já estava em corte autônomo nesse instante: o desligamento manual foi
   deliberadamente cronometrado para coincidir com um corte natural, evitando qualquer ambiguidade
   sobre a origem da queda de potência.
 
@@ -220,32 +220,32 @@ magnitudes (epsilonVa=12, minPoints=4), the same convention as the 25/08 map. Th
 emerged, plus 3 noise points, across the 29 events:
 
 - **Cluster 1** (fan + charger, 38.3-56.3 VA, 13 events): the fan's 10 clean cycles plus exactly
-  **3** charger on-events -- the noisy-startup fragments/underestimates from item 3. The handoff
+  **3** charger on-events: the noisy-startup fragments/underestimates from item 3. The handoff
   predicted the charger's contamination of the fan cluster would drop from 9 to 3 on session-2's
   replay; this fresh capture reproduces that count directly.
 - **Cluster 2** (charger, 82.2-100.7 VA, 7 events): the charger's 5 off-events plus its 2
   successfully merged on-events. The predicted growth of the charger's own cluster (6 to 9 on
   session-2's replay) is directionally reproduced, at a smaller n for this shorter session.
 - **Cluster 3** (sandwich maker, clean full-power band, 785.1-797.4 VA, 6 events): the connection
-  check's on/off, the sync mark's on/off, and item 5's two autonomous cutoffs -- both cutoffs land
+  check's on/off, the sync mark's on/off, and item 5's two autonomous cutoffs: both cutoffs land
   in the same band as the manually-driven transitions, including the one that merged two fragments
   (`fragments`=2, 797.4 VA) into a still-full magnitude.
 - **Noise, cluster -1** (3 events): item 5's manual on (812.2 VA) sits 14.8 VA above cluster 3's
   nearest member, just past epsilonVa; its autonomous on-transition split into two unmerged
   fragments 138 VA apart (341.4 and 479.5 VA) instead of summing to nominal in one release. Neither
   has the 4 same-magnitude neighbours minPoints requires. This is the same ramp-fusion limitation
-  the handoff predicted -- a ramp spanning more than `mergeWindowSeconds` does not fully fuse --
+  the handoff predicted (a ramp spanning more than `mergeWindowSeconds` does not fully fuse),
   showing up on the on-side this run rather than the off-side.
 
 ## Reading
 
-The single decisive prediction -- `fragments` > 1 appearing at all -- held, twice, in the
+The single decisive prediction (`fragments` > 1 appearing at all) held, twice, in the
 charger's 5 cycles (82.2 and 100.7 VA), where 25/08 produced zero fusions across 84 released
 events. One of the two (100.7 VA) lands within 0.6 VA of the measured-series prediction (~101 VA
 mean). The `datado + Ns` signature moved from +6s to +9s on both clean sync-mark events, the
 expected direction and within one 1 Hz sampling window of the theoretical +8s.
 
-The charger's remaining on-transitions (3 of 5) still under-fuse or go undetected -- the noisy
+The charger's remaining on-transitions (3 of 5) still under-fuse or go undetected: the noisy
 startup ramp this issue explicitly left out of scope, and the same pattern the 24/08 confirmation
 session documented for a different fix. The fan stayed clean throughout, as expected for a load
 with no comparable startup noise.
@@ -253,7 +253,7 @@ with no comparable startup noise.
 Item 5's autonomous transitions split the "not perfect" outcome the handoff called for as a health
 signal across both directions of the same thermostat cycle: the off-side fused cleanly to full
 magnitude (`fragments`=2, still landing in the clean band), while the on-side did not fuse at all,
-releasing as two separate `fragments`=1 events 8 s apart instead of one summed release -- a ramp
+releasing as two separate `fragments`=1 events 8 s apart instead of one summed release: a ramp
 that spans more than `mergeWindowSeconds` is not supposed to fuse completely, and here it simply
 did not, on the on-side this time.
 
@@ -262,9 +262,9 @@ did not, on the on-side this time.
 
 ## What this does not do
 
-Does not recharacterize the charger's noisy startup ramp or attempt to resolve it -- declared out
+Does not recharacterize the charger's noisy startup ramp or attempt to resolve it: declared out
 of scope by the issue this session confirms. Does not repeat the full stage-3 protocol (staircase,
-resolution-stress scenarios, soldering iron) -- reduced scope was the point, per the handoff. Does
-not compare the charger's absolute magnitudes to the 24/08 or 25/08 sessions directly -- battery
+resolution-stress scenarios, soldering iron): reduced scope was the point, per the handoff. Does
+not compare the charger's absolute magnitudes to the 24/08 or 25/08 sessions directly: battery
 state differs (47%-43% here vs. those sessions' own ranges) and this item's brief on/off pulses
 are a different usage pattern than a continuous charge.

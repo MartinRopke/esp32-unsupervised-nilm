@@ -38,7 +38,7 @@ with the multimeter reference at that point.
   where the 1 s RMS window straddles the on/off transition) rather than the
   full 30-sample target reached by the other three points. Three other
   on-phases captured during setup, not used for the reported value, landed
-  at 37.00, 37.15 and 36.28 mV mean -- consistent with the 36.545 mV reported
+  at 37.00, 37.15 and 36.28 mV mean, consistent with the 36.545 mV reported
   here to within ~2%, so the short plateau does not look like an outlier.
 
 ## Result

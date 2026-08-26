@@ -107,7 +107,7 @@ void test_switch_off_detected_with_opposite_direction(void) {
 // window but is excluded from it; the candidate window's samples (140, 160,
 // 150) average to 150; an adjacent-sample calculation would instead compare
 // the last baseline sample (100) to the first candidate sample (140), giving
-// 40 -- a result loose enough that a tight tolerance around the true step of
+// 40, a result loose enough that a tight tolerance around the true step of
 // 50 distinguishes the two.
 void test_magnitude_uses_window_means_not_adjacent_samples(void) {
   EventDetector detector(makeConfig());
@@ -165,7 +165,7 @@ void test_two_steps_inside_confirmation_window_produce_single_event(void) {
   timestamp += kSampleIntervalMicros;
   if (result.eventDetected) ++eventCount;
 
-  // Sample 2, while still confirming, is a second, larger jump -- a step of
+  // Sample 2, while still confirming, is a second, larger jump: a step of
   // its own if compared against the baseline directly. It must not produce
   // a second event.
   result = detector.addSample(baselineVa + 200.0f, timestamp);
@@ -188,8 +188,8 @@ void test_two_steps_inside_confirmation_window_produce_single_event(void) {
   TEST_ASSERT_TRUE(result.eventDetected);
 }
 
-// A multi-second ramp -- power climbing sample by sample past the threshold,
-// as a switching transient settles -- resolves to exactly one event once the
+// A multi-second ramp (power climbing sample by sample past the threshold,
+// as a switching transient settles) resolves to exactly one event once the
 // confirmation window fills, rather than one event per sample that happens
 // to clear the threshold against the (stale) baseline.
 void test_multi_second_ramp_does_not_fragment_into_several_events(void) {
@@ -216,8 +216,8 @@ void test_multi_second_ramp_does_not_fragment_into_several_events(void) {
   TEST_ASSERT_FALSE(settled.lastResult.eventDetected);
 }
 
-// The sample that straddles the switching instant is partial -- part old
-// state, part new -- and including it in the candidate window pulls the
+// The sample that straddles the switching instant is partial (part old
+// state, part new), and including it in the candidate window pulls the
 // resolved magnitude short of the true step. The next window, sitting on the
 // real plateau, then differs from that short baseline by enough to clear the
 // threshold again, fragmenting one action into two events. Values are the

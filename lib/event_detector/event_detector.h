@@ -50,7 +50,7 @@ class EventDetector {
 
   // The transition from waiting to confirming: starts confirming, dating the
   // pending event to the sample that crossed the threshold. That sample
-  // itself straddles the transition -- part old state, part new -- so it is
+  // itself straddles the transition (part old state, part new), so it is
   // not pushed into candidate_; the candidate window starts filling from the
   // following sample.
   void beginConfirming(uint32_t timestampMicros);

@@ -66,7 +66,7 @@ static constexpr EventClustererConfig kEventClustererConfig = {
 
 // ---------------------------------------------------------------------------
 // Session output configuration.
-// Independent of the installation block above -- toggles which serial
+// Independent of the installation block above: toggles which serial
 // outputs this build emits, for bench-session control rather than physical
 // calibration.
 // ---------------------------------------------------------------------------

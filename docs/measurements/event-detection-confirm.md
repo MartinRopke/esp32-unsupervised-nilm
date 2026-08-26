@@ -94,7 +94,7 @@ Two files, split by an unplanned ESP32 reset (see "What went wrong").
 ## What went wrong (not painted over)
 
 **1. ESP32 reset on serial port reopen.** The capture script was stopped and restarted
-partway through item 3 (to redo sandwich maker repetition 3 -- see item 3 below). Reopening
+partway through item 3 (to redo sandwich maker repetition 3, see item 3 below). Reopening
 the serial port reset the board (`micros()` restarted from zero), which the first restart
 attempt did not anticipate: it appended the rows recorded after the reset into the same file
 as the ones from before it, producing two overlapping `t_s` ranges in one file. Caught before
@@ -136,36 +136,36 @@ the ground truth, since no action corresponds to it.
 
 - **Item 1 (conferência do artefato de conexão)**: repouso limpo (0.20 +/- 0.007 VA, n=79).
   Sanduicheira conduzindo, 106 amostras antes do corte natural: desvio relativo 1.12%
-  (mean 796.5 VA, sd 8.9 VA) -- dentro da faixa saudável, longe do artefato de 4.4%-4.8%
+  (mean 796.5 VA, sd 8.9 VA), dentro da faixa saudável, longe do artefato de 4.4%-4.8%
   descrito no handoff. Conexão validada, sessão liberada para prosseguir.
 - **Item 2 (marco de sincronismo)**: on 804.0 VA / off 790.8 VA, ambos eventos únicos, sem
   fragmentação.
 - **Item 3 (9 pares isolados)**: sanduicheira 3/3 repetições limpas (magnitude
-  795.8 +/- 6.1 VA, 0.77% de dispersão, nenhuma fragmentada -- ver "What went wrong" item 2
+  795.8 +/- 6.1 VA, 0.77% de dispersão, nenhuma fragmentada; ver "What went wrong" item 2
   para a primeira tentativa da repetição 3, descartada e refeita). Ventilador 3/3 limpas,
   sem fragmentação (38.5-51.0 VA). Carregador: liga fragmentou em 2 eventos em 2 das 3
   repetições (rep 1: 47.5+51.2 VA; rep 2: 30.4+68.7 VA), e na 3a repetição resolveu em 1
   evento só mas subestimado (54.6 VA contra ~99 VA reais em regime), porque a primeira
   janela candidata da rampa ficou abaixo do limiar e virou baseline sem ser reportada como
-  evento -- mesma assinatura da partida ruidosa do carregador já declarada fora de escopo em
+  evento: mesma assinatura da partida ruidosa do carregador já declarada fora de escopo em
   `ISSUE-exclude-transition-sample.md`. Desligar do carregador sempre limpo (93.1, 100.1,
   96.7 VA), como no levantamento de 24/08.
 - **Item 4 (um acionamento simultâneo)**: sanduicheira+ventilador, fundidos em 1 evento no
-  liga (838.4 VA) e 1 no desliga (824.0 VA) -- limitação de fusão se comportando como
+  liga (838.4 VA) e 1 no desliga (824.0 VA): limitação de fusão se comportando como
   esperado, inalterada pela correção.
 - **Item 5 (5 min com a sanduicheira sozinha)**: liga manual limpo (782.9 VA, evento único).
   Corte autônomo fragmentou em 2 eventos (736.5+41.7 VA = 778.2 VA), com o decaimento de
-  potência se espalhando por 3 amostras em vez de 1 -- fora do que a correção cobre, já que
+  potência se espalhando por 3 amostras em vez de 1: fora do que a correção cobre, já que
   ela pressupõe uma única amostra de transição, não uma decadência genuinamente mais lenta
   neste ciclo. O religamento autônomo seguinte fragmentou ainda mais, em 4 eventos
   (236.8 on, 56.3 off espúrio em plena rampa, 502.4 on, 86.3 on, somando ~882 VA) antes de
-  assentar em ~785 VA -- a rampa mais desorganizada do dia inteiro, e exatamente o tipo de
+  assentar em ~785 VA: a rampa mais desorganizada do dia inteiro, e exatamente o tipo de
   transição autônoma que este item foi desenhado para estressar. Corte final também
   autônomo, limpo (780.6 VA, evento único).
 
 ## Reading
 
-Nas transições manuais controladas -- as que a correção mira -- a fragmentação da
+Nas transições manuais controladas (as que a correção mira), a fragmentação da
 sanduicheira caiu para 0 em 8 (sync + 3 repetições isoladas, incluindo a redo), com
 magnitude convergindo em 795.8 +/- 6.1 VA (0.77% de dispersão), consistente com os
 793.7 +/- 4.5 VA (0.6%) do replay de 25/08 sobre os dados de 24/08. O ventilador seguiu
@@ -173,12 +173,12 @@ limpo em todas as 3 repetições, como antes.
 
 O carregador continua fragmentando (2 de 3 repetições no liga) ou subestimando a magnitude
 (1 de 3), confirmando que a rampa de partida ruidosa é mesmo um problema fora do escopo
-desta correção, não resolvido por ela -- exatamente como `ISSUE-exclude-transition-sample.md`
+desta correção, não resolvido por ela: exatamente como `ISSUE-exclude-transition-sample.md`
 já previa.
 
 As transições autônomas do termostato (item 5) continuam fragmentando, e desta vez de forma
 mais severa que qualquer transição manual observada em 24/08 ou hoje: um corte em 2 eventos
-e um religamento em 4. Isso não contradiz a correção -- ela resolve especificamente o caso de
+e um religamento em 4. Isso não contradiz a correção: ela resolve especificamente o caso de
 uma única amostra straddling a transição, e aqui o decaimento/rampa da própria carga se
 espalhou por várias amostras, um regime que a correção nunca se propôs a cobrir. Reportado
 tal como observado, sem maquiagem.
@@ -187,9 +187,9 @@ tal como observado, sem maquiagem.
 
 Não caracteriza o carregador (a rampa de partida dele já era conhecida como fora de escopo).
 Não resolve nem tenta resolver a fragmentação de transições autônomas do termostato quando
-o decaimento/rampa físico se espalha por mais de uma amostra -- essa classe de caso
+o decaimento/rampa físico se espalha por mais de uma amostra: essa classe de caso
 permanece em aberto. Não usa a tomada inteligente como conferência independente (fora de
-escopo desta sessão, reservada para etapas futuras). Não recalibra ganho/tensão -- a leitura
+escopo desta sessão, reservada para etapas futuras). Não recalibra ganho/tensão: a leitura
 de bateria do carregador estar bem mais baixa que em 24/08 (5%-7% contra 40%-22%) já é
 motivo suficiente para não comparar as magnitudes do carregador diretamente entre as duas
 sessões.
