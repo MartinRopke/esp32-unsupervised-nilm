@@ -5,3 +5,10 @@
 .vscode/launch.json
 .vscode/ipch
 .DS_Store
+
+# Smart-plug reference tool: these hold the device local_key / cloud API
+# secret / account geolocation, none of which belong in version control
+tools/smart-plug/devices.json
+tools/smart-plug/tinytuya.json
+tools/smart-plug/tuya-raw.json
+tools/smart-plug/snapshot.json
