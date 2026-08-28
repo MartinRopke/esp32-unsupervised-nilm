@@ -1,0 +1,6 @@
+{
+  "_comment": "Copy to loads.json and map each plug (device id or the exact name from devices.json) to a short appliance label. log-all names each CSV <prefix>-<label>.csv. loads.json is git-ignored because the id/name pairing is specific to one bench.",
+  "ebXXXXXXXXXXXXXXXXXXXX": "sanduicheira",
+  "ebYYYYYYYYYYYYYYYYYYYY": "carregador",
+  "ebZZZZZZZZZZZZZZZZZZZZ": "ventilador"
+}

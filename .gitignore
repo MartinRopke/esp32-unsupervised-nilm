@@ -12,3 +12,5 @@ tools/smart-plug/devices.json
 tools/smart-plug/tinytuya.json
 tools/smart-plug/tuya-raw.json
 tools/smart-plug/snapshot.json
+# loads.json maps plug id/name to appliance label, specific to one bench setup
+tools/smart-plug/loads.json
