@@ -1,0 +1,4 @@
+cluster,complete_cycles,operating_time_s,mean_power_pair_va,mean_power_cluster_va,apparent_energy_vah,truncated_cycles,truncated_energy_vah,off_without_on,power_factor_used,power_factor_source,estimated_cost_reais,cost_range_min_reais,cost_range_max_reais,tariff_reais_per_kwh,tariff_source
+1,4,259.000,42.0864,43.6240,3.038070,1,16.358034,0,,,,0.0013,0.0028,0.9200,"declared installation constant, not a measurement; cost scales with it"
+2,1,81.000,96.7512,96.8094,2.176901,0,0.000000,2,,,,0.0009,0.0020,0.9200,"declared installation constant, not a measurement; cost scales with it"
+3,4,286.999,788.0431,788.0431,62.795708,0,0.000000,0,,,,0.0272,0.0578,0.9200,"declared installation constant, not a measurement; cost scales with it"

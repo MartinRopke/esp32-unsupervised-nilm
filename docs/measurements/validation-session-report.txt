@@ -1,0 +1,17 @@
+tariff: R$ 0.9200/kWh   (declared installation constant, not a measurement; cost scales with it)
+Device 1 (cluster 1)   cycles: 4   operating time: 00:04:19
+  mean apparent power: 42.1 VA (pair mean) / 43.6 VA (cluster mean)
+  apparent energy: 3.0381 VA*h
+  cost range (unsupervised, |PF| 0.47-1.00): R$ 0.0013 - R$ 0.0028
+  truncated: 1 cycle(s), 16.2959 VA*h open at end of capture
+  unmatched: 0 off-without-on discarded
+Device 2 (cluster 2)   cycles: 1   operating time: 00:01:20
+  mean apparent power: 96.8 VA (pair mean) / 96.8 VA (cluster mean)
+  apparent energy: 2.1769 VA*h
+  cost range (unsupervised, |PF| 0.47-1.00): R$ 0.0009 - R$ 0.0020
+  unmatched: 2 off-without-on discarded
+Device 3 (cluster 3)   cycles: 4   operating time: 00:04:46
+  mean apparent power: 788.0 VA (pair mean) / 788.0 VA (cluster mean)
+  apparent energy: 62.7957 VA*h
+  cost range (unsupervised, |PF| 0.47-1.00): R$ 0.0272 - R$ 0.0578
+  unmatched: 0 off-without-on discarded
