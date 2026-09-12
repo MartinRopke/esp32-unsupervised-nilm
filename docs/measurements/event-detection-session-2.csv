@@ -1,3 +1,4 @@
+# START 2026-08-24T19:00:09.631000-03:00 perf=0.000000 (reconstructed from Claude Code session log: Bash dispatch time of capture_session.py; uncertainty ~3s)
 t_s,vrms,irms,power,event,event_t_s,delta_va,direction
 3.020397,0.000009,0.0008,0.1857,0,,,
 4.020155,0.000009,0.0008,0.1992,0,,,

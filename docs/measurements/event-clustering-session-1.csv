@@ -1,3 +1,4 @@
+# START 2026-08-25T17:02:34.975973-03:00 perf=0.000000 (reconstructed from Claude Code session log: first CSV row matched against a wall-clock-epoch-tagged raw log line; uncertainty ~0.1s)
 t_s,vrms,irms,power,event,event_t_s,delta_va,direction,cluster,fragments
 3.020027,0.000013,0.0012,0.2880,0,,,,,
 4.019723,0.000013,0.0012,0.2883,0,,,,,

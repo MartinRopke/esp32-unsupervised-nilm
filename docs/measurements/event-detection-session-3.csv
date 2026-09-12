@@ -1,3 +1,4 @@
+# START 2026-08-24T19:59:35.819000-03:00 perf=0.000000 (reconstructed from Claude Code session log: Bash dispatch time of capture_session.py; uncertainty ~3s; firmware rebooted mid-capture, continues as event-detection-session-4.csv)
 t_s,vrms,irms,power,event,event_t_s,delta_va,direction
 3.020401,0.000038,0.0035,0.8255,0,,,
 4.020138,0.000038,0.0035,0.8235,0,,,

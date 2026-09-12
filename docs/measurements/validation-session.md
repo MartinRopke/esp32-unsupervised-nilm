@@ -137,11 +137,94 @@ Full event→cycle attribution in `validation-session-cluster-map.csv`.
 
 ## Cross-comparison, ESP32 apparent power vs plug (plateau means)
 
+### Method
+
+Not a single registered formula. This was done ad hoc, per block cycle, in
+two Python passes run interactively in the scratchpad during the session
+(never saved as a script, never written down at the time — reconstructed
+here on 11 Sep 2026 from the session transcript, since the text originally
+just said "plateau means" with no method attached).
+
+1. **ESP32 side:** for each block cycle, take the mean of the `power` field
+   (VA) over a hand-picked `t_s` window sitting inside the plateau (chosen by
+   eye to exclude the ramp-in and ramp-out samples at each end), then average
+   across the cycles that pass the discard check below.
+2. **Plug side:** for each block cycle, filter rows in
+   `validation-session-<appliance>.csv` to a hand-picked `iso_time` window
+   inside the plateau, keep only rows with `current_a > 0.01 A` (excludes
+   idle/noise rows), then take the mean of `power_w` and the mean of
+   `voltage_v × current_a` over that window, again averaged across the
+   cycles that pass the discard check.
+
+Windows were chosen by eye, not by a fixed rule (e.g. "N s after on, M s
+before off") — that is the specific gap `verificacao/verificar_tcc.py`
+flags when it says the original Table 3 method was not registered; its own
+`vi()` reconstruction uses a different rule (current mode) and only matches
+these numbers within a widened tolerance.
+
+**Discard check:** a cycle was dropped from the average when its relative
+standard deviation was an order of magnitude above the other cycles' (flags
+an unstable, non-plateau window) or when `current_a` was stuck at a fixed
+value for the whole window (flags a frozen reading, not a real zero).
+
+#### Per-cycle raw values
+
+ESP32 (`t_s` window, VA):
+
+| appliance | cycle | `t_s` window | n | mean (VA) | rel. std dev | used? |
+|---|---|---|---|---|---|---|
+| ventilador | C1 | 545–610 | 64 | 47.43 | 0.35 % | yes |
+| ventilador | C2 | 672–735 | 63 | 47.43 | 0.33 % | yes |
+| ventilador | C3 | 793–858 | 65 | 47.44 | 0.36 % | yes |
+| carregador | C1 | 1010–1078 | 68 | 105.20 | 0.66 % | yes |
+| carregador | C2 | 1132–1198 | 66 | 105.13 | 0.59 % | yes |
+| carregador | C3 | 1250–1322 | 72 | 101.83 | **16.36 %** | **no — relsd an order of magnitude above C1/C2** |
+| sanduicheira | check | 95–190 | 95 | 791.08 | 0.50 % | yes |
+| sanduicheira | C1 | 1655–1725 | 70 | 796.80 | 0.60 % | yes |
+| sanduicheira | C2 | 1778–1832 | 53 | 792.29 | 0.34 % | yes |
+| sanduicheira | C3 | 1890–1915 | 25 | 796.05 | 0.35 % | yes |
+
+Plug (`iso_time` window, wall clock 31 Aug 2026, `current_a > 0.01 A`):
+
+| appliance | cycle | window | n | P mean (W) | V×I mean (VA) | used for P | used for V×I |
+|---|---|---|---|---|---|---|---|
+| ventilador | C1 | 22:54:50–22:56:02 | 16 | 46.0 | 45.4 | yes | yes |
+| ventilador | C2 | 22:56:55–22:58:05 | 15 | 45.9 | 45.3 | yes | yes |
+| ventilador | C3 | 22:58:56–23:00:08 | 16 | 46.0 | 44.6 | yes | yes |
+| carregador | C1 | 23:02:45–23:03:45 | 16 | 66.0 | 118.0 | yes | yes |
+| carregador | C2 | 23:04:45–23:05:45 | 12 | 66.0 | 118.1 | yes | yes |
+| carregador | C3 | 23:06:45–23:07:50 | 13 | 66.0 | 112.1 | yes | **no — current dropped to 0.468 A vs ~0.494 A on C1/C2, same unstable cycle as the ESP32 side's C3** |
+| sanduicheira | check | 22:47:30–22:49:30 | 24 | 677.1 | 784.0 | no (see note) | yes |
+| sanduicheira | C1 | 23:13:45–23:14:42 | 11 | 799.5 | 794.6 | yes | yes |
+| sanduicheira | C2 | 23:15:30–23:16:27 | 11 | 796.0 | **0.0** | yes | **no — `current_a` frozen at 0.001 A for the whole window (see "What went wrong")** |
+| sanduicheira | C3 | 23:17:40–23:18:08 | 6 | 795.5 | 792.0 | yes | yes |
+
+Sandwich `power_w` uses the three block cycles only (check's 677.1 W sits
+below the others because that window includes more of the ramp-in than the
+block cycles do, so it was left out of the P average; it is *included* in
+the V×I average because V×I there is close to the block cycles' and
+`current_a` was clean). This asymmetry — one row in, one row out, on
+different columns of the same cycle — is exactly the kind of ad hoc call
+this method made without writing down a rule; it is reproduced here for the
+record, not endorsed as the right way to do it going forward.
+
+#### Result
+
 | appliance | ESP32 (VA) | plug real power (W) | plug V×I (VA) | ESP32 vs plug V×I |
 |---|---|---|---|---|
 | ventilador | 47.4 | 46.0 | 45.1 | +5.2 % |
 | carregador | 105.2 | 65.9 | 118.0 | −10.8 % |
 | sanduicheira | ~793 | ~797 | ~790 | +0.4 % |
+
+Ventilador and carregador reproduce exactly from the tables above: ESP32
+47.4 = mean(47.43, 47.43, 47.44); plug 45.1 = mean(45.4, 45.3, 44.6). ESP32
+105.2 = mean(105.20, 105.13) with C3 discarded; plug 118.0 takes the C1
+value directly (mean of C1/C2, 118.0/118.1, is 118.05, same rounding).
+Sanduicheira's ESP32 "~793" is the loosest of the three: mean(791.08,
+796.80, 792.29, 796.05) = 794.1, not 793 on the nose — call it a rounded
+eyeball figure, not a reproducible average, and read the "~" as literal.
+Plug 797 = mean(799.5, 796.0, 795.5); plug 790 = mean(784.0, 794.6, 792.0)
+with C2 discarded per the frozen-current note above.
 
 The resistive sandwich maker agrees to well under 1 %. The fan reads ~5 %
 high. The charger — a switched-mode supply with a distorted current
