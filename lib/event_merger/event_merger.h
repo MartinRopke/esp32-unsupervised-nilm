@@ -92,9 +92,9 @@ class EventMerger {
   // wider (see the six-interval regression test).
   bool withinMergeWindow(uint32_t timestampMicros) const;
 
-  // Unrelated to withinMergeWindow's jitter tolerance: this is the release
-  // condition #27 fixed, run on arrival time, not on the dated clock, and is
-  // not touched by this jitter fix.
+  // Unrelated to withinMergeWindow's jitter tolerance: this release
+  // condition runs on arrival time, not on the dated clock, and is not
+  // touched by that jitter tolerance.
   bool pastReleaseWindow(uint32_t nowMicros) const;
 
   EventMergerConfig config_;
