@@ -147,11 +147,10 @@ void test_single_event_comes_out_unchanged(void) {
                         static_cast<int>(released.event.direction));
 }
 
-// The six genuine merge opportunities the bench session produced (see
-// ISSUE-event-merger-release-clock.md), taken from the recorded series in
-// docs/measurements/event-clustering-session-2.csv and -4.csv, not from a
-// synthetic ramp. On the buggy release clock every one of these failed to
-// fuse; on the correct one, every one must.
+// The six genuine merge opportunities the bench session produced, taken
+// from the recorded series in docs/measurements/event-clustering-session-2.csv
+// and -4.csv, not from a synthetic ramp. On the buggy release clock every one
+// of these failed to fuse; on the correct one, every one must.
 struct RegressionPair {
   const char* capture;
   float datedA;
@@ -195,11 +194,11 @@ void test_measured_series_regression_pairs_fuse_to_expected_magnitude(void) {
   }
 }
 
-// The pair from ISSUE-merge-window-in-samples.md: the real dated instants,
-// from a bench confirmation session archived outside this repository
-// (event-clustering-confirm.csv), not rounded, because the whole defect
-// lives in the fractional part. The gap is 5.001099 s, 1.1 ms past a bare
-// 5.0 s window; the jitter tolerance must let it fuse.
+// The real dated instants from a bench confirmation session archived
+// outside this repository (event-clustering-confirm.csv), not rounded,
+// because the whole defect lives in the fractional part. The gap is
+// 5.001099 s, 1.1 ms past a bare 5.0 s window; the jitter tolerance must
+// let it fuse.
 void test_measured_confirm_session_pair_fuses_despite_jitter(void) {
   EventMerger merger(makeConfig());
 

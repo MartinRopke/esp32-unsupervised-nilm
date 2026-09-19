@@ -5,7 +5,7 @@
 #include "event_detector.h"
 
 // A representative install config: 30 VA threshold, 3-sample confirmation
-// window, matching the values the issue settles on for the real firmware.
+// window, matching the values used in the real firmware.
 static EventDetectorConfig makeConfig() {
   EventDetectorConfig c;
   c.thresholdVa = 30.0f;
@@ -221,8 +221,8 @@ void test_multi_second_ramp_does_not_fragment_into_several_events(void) {
 // resolved magnitude short of the true step. The next window, sitting on the
 // real plateau, then differs from that short baseline by enough to clear the
 // threshold again, fragmenting one action into two events. Values are the
-// measured series from ISSUE-exclude-transition-sample.md: the sandwich
-// maker switching on in event-detection-session-1.csv, t=502..511.
+// measured series for the sandwich maker switching on in
+// event-detection-session-1.csv, t=502..511.
 void test_partial_transition_sample_excluded_from_candidate_window(void) {
   EventDetector detector(makeConfig());
 
@@ -288,8 +288,9 @@ void test_partial_transition_sample_excluded_from_candidate_window_switch_off(vo
   TEST_ASSERT_EQUAL_UINT32(crossingTimestamp, lastEvent.event.timestampMicros);
 }
 
-// A step around the fan's size (~45 VA, well under the S/3 > threshold fragmentation
-// bound worked out in the issue) must resolve to exactly one event whether
+// A step around the fan's size (~45 VA, well under the S/3 > threshold
+// fragmentation bound that the excluded-transition-sample fix depends on)
+// must resolve to exactly one event whether
 // or not the crossing sample is in the candidate window, so the fix is not
 // achieved by making the detector less sensitive. Taken from the same file:
 // the fan switching on, event-detection-session-1.csv, t=1648..1657.
