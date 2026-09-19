@@ -1,6 +1,6 @@
 """Poll Tuya smart plugs on the local network and log V / I / P to CSV.
 
-This is a bench reference tool for Stage 4 validation, not ESP32 firmware. The
+This is a bench reference tool for validation runs, not ESP32 firmware. The
 smart plugs are the reference the ESP32 estimate is checked against; see
 docs/measurements/ for the column convention shared with the other bench runs.
 

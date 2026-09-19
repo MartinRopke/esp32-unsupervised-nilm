@@ -8,7 +8,7 @@ labelled training data, then reports per-cluster operating time, apparent
 energy and an estimated cost.
 
 This is the firmware and reference tooling behind an MBA thesis (TCC) in
-Software Engineering at USP/ESALQ; see "Citing this work" below.
+Software Engineering at USP/ESALQ.
 
 ## Hardware
 
@@ -79,9 +79,3 @@ version used.
 ## License
 
 MIT License, see `LICENSE`.
-
-## Citing this work
-
-Martin Ropke, source code for an MBA thesis (TCC) in Software Engineering at
-USP/ESALQ on unsupervised Non-Intrusive Load Monitoring with an ESP32, 2026.
-[link to the published thesis to be added here]

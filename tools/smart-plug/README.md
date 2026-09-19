@@ -1,10 +1,10 @@
 # Smart-plug reference logger
 
-Bench tool for Stage 4 validation. One Tuya smart plug per test appliance
+Bench tool for validation runs. One Tuya smart plug per test appliance
 (sandwich maker, charger, fan) is the reference the ESP32 per-cluster estimate
 is checked against; this script polls the plugs over the **local network** (no
 cloud after first-time setup) and writes a CSV per plug with the same
-time-column convention as the other runs in `docs/measurements/`. The Stage 4
+time-column convention as the other runs in `docs/measurements/`. A validation
 run needs all three logging at once (`log-all`), alongside the ESP32 serial
 capture of the aggregate.
 
@@ -24,8 +24,8 @@ pip install -r requirements.txt
 python -m tinytuya wizard
 ```
 
-Answer with the Cloud Project **Access ID** and **Access Secret** (held by
-Martin, never committed), region **`us`** (Western America DC = Brazil). The
+Answer with the Cloud Project **Access ID** and **Access Secret** (held
+privately, never committed), region **`us`** (Western America DC = Brazil). The
 wizard pulls the device list from the cloud once and writes `devices.json`
 containing each plug's `local_key`. After this, nothing here needs the cloud.
 
@@ -78,7 +78,7 @@ Confirmed layout for the unit on the bench (Novadigital PLUG-BR, `product_id`
 
 All three plugs are the same `product_id` and protocol and return the same DPS
 keys. The under-load cross-check below was run on one of them; repeat it per
-plug during the Stage 4 run, when each has a known appliance on it.
+plug during a validation run, when each has a known appliance on it.
 
 Checked against the sandwich-maker reference load: DP18 3357 / DP19 8015 /
 DP20 2377 = 3.357 A / 801.5 W / 237.7 V, and V x I (798 W) agrees with DP19 to
@@ -95,13 +95,13 @@ reflects the change within ~1 s and all three DPS update together and stay
 mutually consistent. At a steady plateau nothing updates for tens of seconds;
 the values are correct, just not refreshed. Within the first second or two of a
 transition the three DPS can briefly disagree (one lagging). Net effect on the
-Stage 4 comparison: fine for per-cluster VA.h on steady plateaus, ~1-2 s of edge
+validation comparison: fine for per-cluster VA.h on steady plateaus, ~1-2 s of edge
 ambiguity per on/off event, which belongs in the writeup as a reference-side
 limitation, not an ESP32 one.
 
 ### 3. Log a session
 
-All plugs at once, for the Stage 4 run:
+All plugs at once, for a validation run:
 
 ```sh
 python collect.py log-all --out-prefix session-1 --echo
@@ -151,5 +151,5 @@ iso_time,t_s,voltage_v,current_a,power_w,energy_kwh,raw_dps
 
 Committed session CSVs go under `docs/measurements/` alongside the other
 bench data (e.g. `smart-plug-reference.csv`), following the existing pattern.
-For a Stage 4 run, commit all three per-plug CSVs plus the ESP32 capture from
+For a validation run, commit all three per-plug CSVs plus the ESP32 capture from
 the same window.
