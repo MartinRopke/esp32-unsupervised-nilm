@@ -195,8 +195,9 @@ void test_measured_series_regression_pairs_fuse_to_expected_magnitude(void) {
   }
 }
 
-// The pair from ISSUE-merge-window-in-samples.md: the real dated instants
-// from event-clustering-confirm.csv, not rounded, because the whole defect
+// The pair from ISSUE-merge-window-in-samples.md: the real dated instants,
+// from a bench confirmation session archived outside this repository
+// (event-clustering-confirm.csv), not rounded, because the whole defect
 // lives in the fractional part. The gap is 5.001099 s, 1.1 ms past a bare
 // 5.0 s window; the jitter tolerance must let it fuse.
 void test_measured_confirm_session_pair_fuses_despite_jitter(void) {
