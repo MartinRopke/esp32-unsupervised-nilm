@@ -27,7 +27,7 @@ Software Engineering at USP/ESALQ.
 
 - `lib/` - the six pure, Arduino-independent modules that make up the NILM
   pipeline (measurement, event detection, event merging, clustering, cluster
-  reporting, CSV formatting). See `lib/README` for what each one does.
+  reporting, CSV formatting). See `lib/README.md` for what each one does.
 - `src/` - the firmware entry point (`main.cpp`, which wires the `lib/`
   modules together and holds the installation configuration) plus the
   Arduino-only Serial output wrappers (`teleplot_output`, `session_csv_output`,
