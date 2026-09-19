@@ -185,8 +185,7 @@ void loop() {
   }
 
   // On-demand report: send 'r' for the console block, 'c' for its CSV form. There is no
-  // in-firmware notion of "end of capture" (the board only stops when the operator closes the
-  // serial port, which reboots it, see docs/measurements' "reboots on serial reconnect" note):
+  // in-firmware notion of "end of capture": closing the serial port reboots the board, so
   // sending 'r'/'c' right before disconnecting is how an operator gets the end-of-capture report.
   if (Serial.available() > 0) {
     char command = Serial.read();
