@@ -1,3 +1,6 @@
+# Equipment: Fluke 117 multimeter (True RMS); load: sandwich maker, point sandwich_cycle_2
+# Date: 19 Aug 2026
+# Mains voltage, sandwich_cycle_2: average of 236.7 V and 236.8 V = 236.75 V
 point,turns,load,sample_index,vrms_v,included_in_mean,note
 1turn_socket_loose,1,soldering_iron,1,0.000010,False,iron's mains socket was not fully seated; discarded
 1turn_socket_loose,1,soldering_iron,2,0.000010,False,iron's mains socket was not fully seated; discarded

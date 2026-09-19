@@ -1,3 +1,9 @@
+# Equipment: Fluke 117 multimeter (True RMS); load: sandwich maker, cold and hot resistance
+# Date: 20 Aug 2026
+# Cold resistance (multimeter, null-corrected, probes reseated between readings): 70.7 ohm, Fluke 117, pontas zeradas
+# Mains voltage, cold phase: average of 236.3 V and 236.2 V = 236.25 V
+# Mains voltage, hot phase: average of 236.0 V, 235.8 V and 235.9 V = 235.9 V
+# Uncertainty budget for calibrationFactor (quadrature sum): R_cold (multimeter) 1.18%; vrms cold/hot ratio 0.32%; mains-drift correction 0.10%; R_hot combined 1.23%; V_mains (sandwich_cycle_2) 1.13%; V_burden (firmware) 0.13%; total ~1.7%
 attempt,t_s,vrms,phase,included_in_mean,note
 1,4.173,0.026472,cold,false,"discarded: oscillation artifact (~4.4% rel. stdev), matching a previously documented marginal-connection signature; cleared after physically inspecting the rig (see doc)"
 1,5.173,0.037826,cold,false,"discarded: oscillation artifact (~4.4% rel. stdev), matching a previously documented marginal-connection signature; cleared after physically inspecting the rig (see doc)"

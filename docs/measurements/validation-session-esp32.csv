@@ -1,3 +1,4 @@
+# Mains voltage, everything off (multimeter): 239.8 V
 # START 2026-08-31T22:45:44.868193-03:00 perf=3.027974
 t_s,vrms,irms,power,event,event_t_s,delta_va,direction,cluster,fragments
 3.019702,0.000193,0.0177,4.1880,0,,,,,
