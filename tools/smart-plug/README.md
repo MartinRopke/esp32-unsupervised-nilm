@@ -77,27 +77,9 @@ Confirmed layout for the unit on the bench (Novadigital PLUG-BR, `product_id`
 | energy (cumulative) | 17 | add_ele | Wh | 1000 |
 
 All three plugs are the same `product_id` and protocol and return the same DPS
-keys. The under-load cross-check below was run on one of them; repeat it per
-plug during a validation run, when each has a known appliance on it.
-
-Checked against the sandwich-maker reference load: DP18 3357 / DP19 8015 /
-DP20 2377 = 3.357 A / 801.5 W / 237.7 V, and V x I (798 W) agrees with DP19 to
-under 1%. **DP17 (add_ele) is present intermittently and does not track energy
-in real time**: it stayed pinned at 53 (~0.053 kWh) through a full ~800 W
-on-cycle. It is Tuya's incremental counter (resets on report), not an odometer,
-so integrate VA.h from the V/I/P samples. `collect.py` still logs the column
-(it is informative when present); pass `--no-energy` to drop it.
-
-**Update cadence for this unit.** The plug does not stream at the poll rate; it
-pushes a partial DPS dict (only the keys that moved) when a reading changes,
-otherwise `status()` just returns the last values. On a clean resistive step it
-reflects the change within ~1 s and all three DPS update together and stay
-mutually consistent. At a steady plateau nothing updates for tens of seconds;
-the values are correct, just not refreshed. Within the first second or two of a
-transition the three DPS can briefly disagree (one lagging). Net effect on the
-validation comparison: fine for per-cluster VA.h on steady plateaus, ~1-2 s of edge
-ambiguity per on/off event, which belongs in the writeup as a reference-side
-limitation, not an ESP32 one.
+keys. Cross-check each plug under a known load before trusting `log-all`'s
+output for it; see the code comments in `collect.py` for the energy column's
+known quirk and the partial-update behavior to expect between polls.
 
 ### 3. Log a session
 
