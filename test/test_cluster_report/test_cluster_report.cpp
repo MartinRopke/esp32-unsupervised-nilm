@@ -276,8 +276,8 @@ void test_csv_form_carries_the_same_figures(void) {
 // cluster 2), 5 off-events and 2 merged on-events, all clean single or fused
 // transitions. FIFO pairs each on with the next off in time; three offs
 // have no preceding on in this fixture (the charger's on-transitions that
-// under-fused/went undetected in that session, per the confirm write-up),
-// so they must be discarded and counted, not silently dropped.
+// under-fused or went undetected in that session), so they must be
+// discarded and counted, not silently dropped.
 void test_measured_charger_cluster_fixture_from_confirm_session(void) {
   ClusterReporter reporter(makeConfig());
 

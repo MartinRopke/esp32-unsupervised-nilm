@@ -149,7 +149,7 @@ iso_time,t_s,voltage_v,current_a,power_w,energy_kwh,raw_dps
 
 ## Where sessions live
 
-Committed session CSVs and the writeup go under `docs/measurements/` alongside
-the other bench data (e.g. `smart-plug-reference.csv` /
-`smart-plug-reference.md`), following the existing pattern. For a Stage 4 run,
-commit all three per-plug CSVs plus the ESP32 capture from the same window.
+Committed session CSVs go under `docs/measurements/` alongside the other
+bench data (e.g. `smart-plug-reference.csv`), following the existing pattern.
+For a Stage 4 run, commit all three per-plug CSVs plus the ESP32 capture from
+the same window.
