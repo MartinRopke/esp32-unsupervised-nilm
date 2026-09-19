@@ -7,8 +7,9 @@ into per-appliance clusters at runtime with no signature database and no
 labelled training data, then reports per-cluster operating time, apparent
 energy and an estimated cost.
 
-This is the firmware and reference tooling behind an MBA thesis (TCC) in
-Software Engineering at USP/ESALQ.
+This is the firmware and reference tooling behind a TCC (final course project)
+for the MBA in Software Engineering at USP/ESALQ, "Sistema NILM não supervisionado
+com ESP32 para gestão financeira residencial", by Martin Ropke.
 
 ## Hardware
 
@@ -72,9 +73,11 @@ pio test -e native
 
 ## Code style
 
-Code is formatted with `clang-format` (see `.clang-format`, based on Google's
-style with a 100-column limit). `requirements-dev.txt` pins the `clang-format`
-version used.
+Code design follows the [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)
+(naming, header structure, const-correctness, and so on). Formatting is
+enforced with `clang-format` (see `.clang-format`, also based on Google's
+style, with a 100-column limit). `requirements-dev.txt` pins the
+`clang-format` version used.
 
 ## License
 
