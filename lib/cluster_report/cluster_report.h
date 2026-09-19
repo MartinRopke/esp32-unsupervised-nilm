@@ -43,13 +43,12 @@ struct ClusterReportConfig {
   float tariffReaisPerKwh;
 };
 
-// One load category's power factor, from Hannagan, J.; Woszczeiko, R.;
-// Langstaff, T.; Shen, W.; Rodwell, J. 2023. The impact of household
-// appliances and devices: consider their reactive power and power factors.
-// Sustainability 15(1): 158. Only the magnitude enters the cost conversion;
-// `leading` records the source's sign convention (electronic loads inject
-// reactive power) for citation fidelity, even though cost math uses
-// |magnitude| only.
+// One load category's power factor. Each category's attribution string
+// (see `source` below) is printed with every report that uses it, so the
+// premise behind a cost estimate travels with the number. Only the
+// magnitude enters the cost conversion; `leading` records the source's own
+// sign convention (electronic loads inject reactive power) for fidelity to
+// it, even though cost math uses |magnitude| only.
 struct PowerFactorCategory {
   const char* name;
   float magnitude;  // |power factor| used for the point cost estimate, 0..1
@@ -213,9 +212,8 @@ class ClusterReporter {
 float estimateCostReais(float apparentEnergyVah, float powerFactorMagnitude,
                         float tariffReaisPerKwh);
 
-// Renders the report as the console block described in
-// ISSUE-cluster-pairing-and-cost.md, one paragraph per cluster in ascending
-// clusterId order, each ending in a trailing newline. Clusters with no
+// Renders the report as a console block, one paragraph per cluster in
+// ascending clusterId order, each ending in a trailing newline. Clusters with no
 // complete cycle print "detected, no complete cycle" instead of a cost
 // line. `assignments` supplies a human-chosen PowerFactorCategory for
 // whichever cluster ids the caller has identified; an unlisted cluster

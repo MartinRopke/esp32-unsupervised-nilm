@@ -36,9 +36,8 @@ static constexpr MeterConfig kConfig = {
 };
 
 // Threshold and confirmation window from the event-detection literature:
-// 30 VA follows the reference-dataset labelling convention (Pereira 2019;
-// Rehman et al. 2020); 3 samples merges a switching transient into one
-// event (Lu and Li 2020).
+// 30 VA follows a common reference-dataset labelling convention; 3 samples
+// merges a switching transient into one event instead of several.
 static constexpr EventDetectorConfig kEventDetectorConfig = {
     /* thresholdVa               */ 30.0f,  // [VA]
     /* confirmationWindowSamples */ 3,
@@ -64,9 +63,10 @@ static constexpr EventMergerConfig kEventMergerConfig = {
 // across three appliances (6.2 VA), the smaller of the two candidates a
 // sigma-multiple derivation considers, matching the empirical plateau that
 // separates the same three appliances into distinct clusters. minPoints:
-// 2 x dimensionality (Schubert et al. 2017) raised for declared noise, and
-// independently equal to two complete on/off cycles, since an appliance
-// seen only once is not distinguishable from an artefact. maxEvents: bounds
+// 2 x dimensionality, a common DBSCAN rule-of-thumb baseline, raised for
+// declared noise, and independently equal to two complete on/off cycles,
+// since an appliance seen only once is not distinguishable from an
+// artefact. maxEvents: bounds
 // history_ to maxEvents * sizeof(float) = 128 * 4 B = 512 B resident, plus
 // O(maxEvents) transient working buffers per call, freed immediately after,
 // negligible against the ESP32's RAM and generous against the ~40 events a
@@ -187,8 +187,7 @@ void loop() {
   // On-demand report: send 'r' for the console block, 'c' for its CSV form. There is no
   // in-firmware notion of "end of capture" (the board only stops when the operator closes the
   // serial port, which reboots it, see docs/measurements' "reboots on serial reconnect" note):
-  // sending 'r'/'c' right before disconnecting is how an operator gets the end-of-capture report
-  // this issue's console-output goal describes.
+  // sending 'r'/'c' right before disconnecting is how an operator gets the end-of-capture report.
   if (Serial.available() > 0) {
     char command = Serial.read();
     if (command == 'r') {
