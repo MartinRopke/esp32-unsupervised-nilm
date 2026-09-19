@@ -40,8 +40,6 @@ Software Engineering at USP/ESALQ; see "Citing this work" below.
   device/credential files it writes (`devices.json`, `tinytuya.json`,
   `snapshot.json`, `loads.json`, etc.) are git-ignored on purpose and are not
   described here.
-- `plots/` - diagnostic plots from early characterization of the SCT signal
-  and sampling rate.
 - `include/` - PlatformIO's default project header folder; unused, since
   every header in this project lives next to its module under `lib/` or
   `src/`.
