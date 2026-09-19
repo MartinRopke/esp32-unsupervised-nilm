@@ -39,7 +39,7 @@ static std::vector<LabeledEvent> feedWithLabels(ClusterReporter& reporter,
 // both pairs, changing the durations (20s/20s under FIFO vs 10s/30s under
 // LIFO) and the resulting apparent energy (0.7222 VA*h under FIFO vs
 // 0.7167 VA*h under LIFO), even though the two implementations coincide on
-// the mean of pair means (65 VA either way) — asserted on the individual
+// the mean of pair means (65 VA either way), asserted on the individual
 // cycles, not just the aggregate, so the two do not look alike.
 void test_fifo_pairing_on_interleaved_two_appliance_cluster(void) {
   ClusterReporter reporter(makeConfig());

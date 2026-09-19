@@ -83,16 +83,16 @@ plug during the Stage 4 run, when each has a known appliance on it.
 Checked against the sandwich-maker reference load: DP18 3357 / DP19 8015 /
 DP20 2377 = 3.357 A / 801.5 W / 237.7 V, and V x I (798 W) agrees with DP19 to
 under 1%. **DP17 (add_ele) is present intermittently and does not track energy
-in real time** -- it stayed pinned at 53 (~0.053 kWh) through a full ~800 W
+in real time**: it stayed pinned at 53 (~0.053 kWh) through a full ~800 W
 on-cycle. It is Tuya's incremental counter (resets on report), not an odometer,
 so integrate VA.h from the V/I/P samples. `collect.py` still logs the column
 (it is informative when present); pass `--no-energy` to drop it.
 
-**Update cadence — this unit.** The plug does not stream at the poll rate; it
+**Update cadence for this unit.** The plug does not stream at the poll rate; it
 pushes a partial DPS dict (only the keys that moved) when a reading changes,
 otherwise `status()` just returns the last values. On a clean resistive step it
 reflects the change within ~1 s and all three DPS update together and stay
-mutually consistent. At a steady plateau nothing updates for tens of seconds --
+mutually consistent. At a steady plateau nothing updates for tens of seconds;
 the values are correct, just not refreshed. Within the first second or two of a
 transition the three DPS can briefly disagree (one lagging). Net effect on the
 Stage 4 comparison: fine for per-cluster VA.h on steady plateaus, ~1-2 s of edge
@@ -138,13 +138,13 @@ python collect.py log-all --out-prefix session-1 --echo \
 iso_time,t_s,voltage_v,current_a,power_w,energy_kwh,raw_dps
 ```
 
-- `iso_time` — wall clock, for aligning with the ESP32 serial capture
-- `t_s` — seconds since the logger started, matching the `t_s` column in
+- `iso_time`: wall clock, for aligning with the ESP32 serial capture
+- `t_s`: seconds since the logger started, matching the `t_s` column in
   `docs/measurements/event-detection-session-*.csv` etc.
-- `voltage_v` / `current_a` / `power_w` — mapped DPS values; a value is carried
+- `voltage_v` / `current_a` / `power_w`: mapped DPS values; a value is carried
   forward across a partial-dict poll that omits its DPS (an omitted key means
   unchanged). `--raw-only` disables the carry-forward and leaves the cell blank.
-- `raw_dps` — the DPS dict exactly as received (may be partial), so the mapping
+- `raw_dps`: the DPS dict exactly as received (may be partial), so the mapping
   and the carry-forward can be re-derived later without re-running the bench
 
 ## Where sessions live

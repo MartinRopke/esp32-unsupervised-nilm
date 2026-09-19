@@ -163,8 +163,8 @@ struct PerClusterStats {
   uint32_t offWithoutOnDiscarded;
 
   // Every complete cycle (oldest-paired-first, i.e. the FIFO pairing order)
-  // followed by every truncated cycle (in ON order), so a caller — a test,
-  // in particular — can check individual pairs rather than only the
+  // followed by every truncated cycle (in ON order), so a caller (a test,
+  // in particular) can check individual pairs rather than only the
   // aggregates above. The aggregates are derived from this list; it is not
   // a second source of truth, just exposed for inspection.
   std::vector<Cycle> cycles;
