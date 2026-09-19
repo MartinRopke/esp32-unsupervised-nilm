@@ -1,3 +1,6 @@
+# Equipment: ESP32 NILM rig; loads: sandwich maker, fan, laptop charger
+# Date: 24 Aug 2026
+# Measured: event detection confirmation session, items 1-5 up through the first (discarded) attempt at sandwich maker isolated repetition 3
 # START 2026-08-24T22:03:04.812488-03:00 perf=0.000000 (reconstructed from Claude Code session log: first CSV row matched against a wall-clock-tagged stdout line; uncertainty ~0.2s)
 t_s,vrms,irms,power,event,event_t_s,delta_va,direction
 3.020512,0.000008,0.0007,0.1646,0,,,

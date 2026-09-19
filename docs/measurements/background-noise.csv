@@ -1,3 +1,6 @@
+# Equipment: current sensor rig on an isolated power strip; 60 W soldering iron as the steady load
+# Date: 14 Aug 2026
+# Measured: idle and steady-load power readings, used to validate the 30 VA event threshold
 condition,t_s,vrms,irms,power
 idle,0.0,0.0,0.0014,0.3033
 idle,1.0,0.0,0.0013,0.2773

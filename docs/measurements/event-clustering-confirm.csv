@@ -1,3 +1,6 @@
+# Equipment: ESP32 NILM rig; loads: sandwich maker, fan, laptop charger
+# Date: 25 Aug 2026
+# Measured: event clustering confirmation session, items 1-4 (connection check, sync mark, charger x5, fan x5)
 # START 2026-08-25T22:11:50.314606-03:00 perf=0.000000 
 t_s,vrms,irms,power,event,event_t_s,delta_va,direction,cluster,fragments
 3.020516,0.000014,0.0013,0.3014,0,,,,,

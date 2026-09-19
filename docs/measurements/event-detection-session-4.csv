@@ -1,3 +1,6 @@
+# Equipment: ESP32 NILM rig; loads: sandwich maker, fan, laptop charger
+# Date: 24 Aug 2026
+# Measured: event detection bench session, continuation of the staircase-overlap attempt
 # START 2026-08-24T20:07:18.000000-03:00 perf=0.000000 (reconstructed from Claude Code session log: user-reported wall-clock time correlated to t_s right after the mid-capture firmware reboot that split this file from event-detection-session-3.csv; uncertainty ~1s)
 t_s,vrms,irms,power,event,event_t_s,delta_va,direction
 1.019683,0.002784,0.2554,60.4680,0,,,

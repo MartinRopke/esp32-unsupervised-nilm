@@ -1,3 +1,6 @@
+# Equipment: ESP32 NILM rig; load: sandwich maker
+# Date: 25 Aug 2026
+# Measured: event clustering confirmation session, item 5 (ten minutes of sandwich maker alone)
 # START 2026-08-25T23:17:23.573580-03:00 perf=0.000000 
 t_s,vrms,irms,power,event,event_t_s,delta_va,direction,cluster,fragments
 3.020525,0.000014,0.0013,0.3048,0,,,,,

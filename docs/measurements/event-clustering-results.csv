@@ -1,3 +1,6 @@
+# Equipment: ESP32 NILM rig; loads: fan, laptop charger, soldering iron, sandwich maker
+# Date: 26 Aug 2026
+# Measured: event clustering results session, Stage 3 full bench run (merging and DBSCAN clustering)
 # START 2026-08-26T19:36:09.980469-03:00 perf=0.000000 (reconstructed from Claude Code session log: a date+tail correlation found mid-capture; uncertainty ~1-2s; this is the start of only the LAST firmware-boot segment kept in the file -- the physical session began earlier around 18:45 local but that portion was discarded after a mid-session reboot)
 t_s,vrms,irms,power,event,event_t_s,delta_va,direction,cluster,fragments
 1.020547,0.000026,0.0024,0.5578,0,,,,,

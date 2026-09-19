@@ -1,3 +1,6 @@
+# Equipment: Tuya smart plug (PLUG-BR), polled locally via tinytuya; load: sandwich maker
+# Date: 27 Aug 2026
+# Measured: smart plug DPS discovery and update cadence, cross-checked against the measured reference load resistance
 iso_time,t_s,voltage_v,current_a,power_w,energy_kwh,raw_dps
 2026-08-27T21:04:34.290,0.0,240.9,0.0,0.0,,"{""1"":true,""9"":0,""18"":0,""19"":0,""20"":2409,""21"":1,""22"":564,""23"":26748,""24"":14621,""25"":2840,""26"":0,""38"":""memory"",""41"":false,""44"":""""}"
 2026-08-27T21:04:35.313,1.005,240.9,0.0,0.0,,"{""1"":true,""9"":0,""18"":0,""19"":0,""20"":2409,""21"":1,""22"":564,""23"":26748,""24"":14621,""25"":2840,""26"":0,""38"":""memory"",""41"":false,""44"":""""}"

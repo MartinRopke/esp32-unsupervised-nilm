@@ -1,3 +1,6 @@
+# Equipment: ESP32 NILM rig; loads: sandwich maker, fan, laptop charger
+# Date: 25 Aug 2026
+# Measured: event clustering bench session, sync mark, isolated 5-cycle tests, ten-minute passive thermostat observation, first staircase overlap repetition
 # START 2026-08-25T17:24:50.942285-03:00 perf=0.000000 (reconstructed from Claude Code session log: first CSV row matched against a wall-clock-epoch-tagged raw log line; uncertainty ~0.1s)
 t_s,vrms,irms,power,event,event_t_s,delta_va,direction,cluster,fragments
 1.019715,0.000015,0.0014,0.3326,0,,,,,
